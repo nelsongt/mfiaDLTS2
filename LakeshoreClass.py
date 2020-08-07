@@ -2,185 +2,110 @@
 # Lakeshore class, generates instances of Lakeshore virtual interface
 
 import time
+from PyQt5.QtCore import pyqtSignal
 from pymeasure.instruments.lakeshore import LakeShore331
 
 from LogClass import LogObject
 
 
 class Lakeshore(LogObject):
+    lakeshore_disconnect = pyqtSignal()
 
     def __init__(self):
         super(Lakeshore, self).__init__()
-        #self.getCurrentTemp = []
-        #self.getCurrentWait = []
-        #self.unstable = False
+        self.obj1 = []
 
-        # Stopped state when user clicks stop
+        # Stopped state for when user clicks stop
         self.stopped = []
 
     def reset(self):
         self.generate_log("Initializing Lakeshore...","blue")
         self.stopped = False
-        #     getCurrentTemp = sampleSpaceTemperature
-        #self.getCurrentTemp = 290
-        #self.getCurrentWait = 2
-        #self.unstable = False
 
         # Check for lakeshore 331
-        if self.isLakeshoreInstalled() == 0:
-            self.generate_log("Lakeshore Not Found. Connect and re-initialize.","orange")
+        try:
+            self.obj1 = LakeShore331("GPIB0::12")
+        except:
+            self.generate_log("Could not initialize GPIB interface. Make sure drivers are installed.","red")
             return False
-
-
-    #     % Setup Lakeshore
-    #     response = lakeshoreQuery('CSET?');
-    #     if ~strcmp(response,'B,1,0,2')
-    #         lakeshoreQuery('CSET 1,B,1,0,2');   % Control loop 1, sensor B, in Kelvin (1), default heater off (0), heater units power (2)
-    #     end
-    #     response = lakeshoreQuery('RANGE?');
-    #     if ~strcmp(response,'3')
-    #         lakeshoreQuery('RANGE 3');          % Set heater to high (3), medium (2), low (1)
-    #     end
-    #     if strcmp(response,'-1')
-    #         cprintf('red','Error configuring lakeshore. Exiting...\n');
-    #         success = false;
-    #     end
+        if self.isLakeshoreConnected(obj1) == False:
+            self.generate_log("Lakeshore Not Found. Connect and re-initialize.","orange")
+            self.obj1 = []
+            return False
+        
+        # Setup Lakeshore
+        if self.isLakeshoreConfigured(obj1) == False:
+            self.generate_log("Lakeshore Could Not Be Configured. Troubleshoot and re-initialize.","orange")
+            self.obj1 = []
+            return False
+         
         self.generate_log("Lakeshore configure OK.","Green")
         return True
-    #     cprintf('green','Lakeshore configure OK.\n');
-    #     success = true;
-    #     end
-    #
-    def isLakeshoreInstalled(self):
-        # Initialize communication to temperature controller.
+
+    def isLakeshoreConnected(self,lakeshoreObj):
+        # Initialize communication to temperature controller. Requires PyMeasure
+
+        # Attempt to communicate, if fail catch error
         try:
-            obj1 = LakeShore331("GPIB0::12")
+            idn = lakeshoreObj.id
         except:
-            return 0
-        #if not obj1:
-        #    return 0
+            return False
 
+        # Make sure device is a lakeshore
+        idnCheck = 'LSCI,MODEL330,0,032301';
+        if idn == idnCheck:
+            return True
+        else:
+            return False
+
+    def isLakeshoreConfigured(self,lakeshoreObj):
+        response = self.lakeshoreQuery(lakeshoreObj,'CSET?');
+        if response != 'B,1,0,2':
+            lakeshoreObj.write('CSET 1,B,1,0,2') # Control loop 1, sensor B, in Kelvin (1), default heater off (0), heater units power (2)
+        elif response == '-1':
+            return False
+            
+        response = self.lakeshoreQuery(lakeshoreObj,'RANGE?')
+        if response != '3':
+            lakeshoreObj.write('RANGE 3') # Set heater to high (3), medium (2), low (1)
+        elif response == '-1':
+            return False
+            
+        return True
+
+    def lakeshoreQuery(self,lakeshoreObj,commmand):
         try:
-            print(obj1.id)
+            response = lakeshoreObj.ask(command)
+            return reponse
         except:
-            return 0
+            self.generate_log("Lakeshore connection problem.","red")
+            self.lakeshore_disconnect.emit()
+            return '-1'
 
+    def lakeshoreSetPoint(self,point):
+        try:
+            self.obj1.setpoint_1 = point
+        except:
+            self.generate_log("Lakeshore connection problem.","red")
+            self.lakeshore_disconnect.emit()
 
-        #     obj1 = instrfind('Type', 'gpib', 'BoardIndex', 0, 'PrimaryAddress', 12);
+    def sampleSpaceTemperature(self,lakeshoreObj):
+        # Get the temperature
+        tempString = self.lakeshoreQuery(lakeshoreObj,'KRDG? B')
+        temp = float(tempString);
+        return temp
 
-    #     % Create the GPIB object if it does not exist
-    #     % otherwise use the object that was found.
-    #     if isempty(obj1)
-    #         obj1 = gpib('NI', 0, 12);
-    #     else
-    #         fclose(obj1);
-    #         obj1 = obj1(1);
-    #     end
-    #
-    #     installed = 0;
-    #
-    #     try
-    #     fopen(obj1)
-    #     fprintf(obj1, '*idn?');
-    #     pause(.05);
-    #
-    #     cut = 1:10;
-    #     idnCheck = 'LSCI,MODEL330,0,032301';
-    #     idn = fscanf(obj1);
-    #
-    #     if strcmp(idn(cut),idnCheck(cut))
-    #         installed = 1;
-    #     else
-    #         installed = 0;
-    #     end
-    #
-    #     catch err
-    #         disp('Cannot connect to Lakeshore 335!')
-    #         disp(err.message)
-    #         installed = 0;
-    #     end
-    #     % Close communication.
-    #     fclose(obj1)
-    #     end
-    #
-    #
-
-    # def lakeshoreQuery(self,commmand):
-
-        # % Initialize communication to temperature controller.
-        # obj1 = instrfind('Type', 'gpib', 'BoardIndex', 0, 'PrimaryAddress', 12);
-        # % Create the GPIB object if it does not exist
-        # % otherwise use the object that was found.
-        # if isempty(obj1)
-        #     obj1 = gpib('NI', 0, 12);
-        # else
-        #     fclose(obj1);
-        #     obj1 = obj1(1);
-        # end
-        #
-        # % Get the temperature
-        # try
-        #     fopen(obj1);
-        #     response = sn(query(obj1,commmand));
-        #
-        #     % Close communication.
-        #     fclose(obj1);
-        # catch err
-        #     err
-        #     disp(err.message)
-        #     response = '-1';
-        # end
-        # end
-        #
-        # % Snip out certain characters
-        # function x =sn(x)
-        # x(x==10)=[];
-        # x(x==13)=[];
-        # end
-
-    # def sampleSpaceTemperature(self,varargin):
-    #
-    #     % Initialize communication to temperature controller.
-    #     obj1 = instrfind('Type', 'gpib', 'BoardIndex', 0, 'PrimaryAddress', 12);
-    #     % Create the GPIB object if it does not exist
-    #     % otherwise use the object that was found.
-    #     if isempty(obj1)
-    #         obj1 = gpib('NI', 0, 12);
-    #     else
-    #         fclose(obj1);
-    #         obj1 = obj1(1);
-    #     end
-    #
-    #     % Get the temperature
-    #     fopen(obj1)
-    #
-    #     tempString = sn(query(obj1,'KRDG? B'));
-    #
-    #     if nargin&&strcmpi(varargin{1},'string')
-    #         temp = tempString;
-    #     else
-    #         temp = str2double(tempString);
-    #     end
-    #
-    #     % Close communication.
-    #     fclose(obj1)
-    #     end
-    #
-    #     % Snip out certain characters
-    #     function x =sn(x)
-    #     x(x==10)=[];
-    #     x(x==13)=[];
 
     def SET_TEMP(self,setPoint,tempStable,timeStable):
-    #     lakeshoreQuery(strcat('SETP ',num2str(setPoint)))  # Set point to lakeshore
-    #     getCurrentTemp = sampleSpaceTemperature
+        self.lakeshoreSetPoint(setPoint)  # Set point to lakeshore
+        getCurrentTemp = sampleSpaceTemperature
         getCurrentTemp = 290
         getCurrentWait = timeStable
         unstable = False
         while (abs(getCurrentTemp - setPoint) > tempStable or getCurrentWait >= 0) and self.stopped == False:  # Continuously loop the time and temp stability until both are met
             while abs(getCurrentTemp - setPoint) > tempStable and self.stopped == False:
                 time.sleep(2)  # Wait for temperature to reach set point
-    #           getCurrentTemp = sampleSpaceTemperature #TODO
+                getCurrentTemp = sampleSpaceTemperature
                 getCurrentTemp = setPoint
                 self.generate_log("Current Temp: {:3.2f}. Set point: {:3.2f}. Delta: {:2.2f}.".format(getCurrentTemp,setPoint,getCurrentTemp-setPoint),"blue")
             unstable = False;
@@ -188,7 +113,7 @@ class Lakeshore(LogObject):
                 self.generate_log("Wait for time stability: {:d} s left.".format(getCurrentWait),"blue")
                 time.sleep(1)                          # Wait 1 second
                 getCurrentWait = getCurrentWait - 1          # Subtract one from our counter
-                #getCurrentTemp = sampleSpaceTemperature #TODO
+                getCurrentTemp = sampleSpaceTemperature
                 if abs(getCurrentTemp - setPoint) > tempStable:  # check again for temp stability, if not stable then flag for restart
                     unstable = True
 

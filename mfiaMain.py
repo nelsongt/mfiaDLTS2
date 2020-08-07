@@ -35,6 +35,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonStop.clicked.connect(self.stopping_scan)
         self.data.init_fail.connect(self.scan_complete)
         self.data.init_fail.connect(self.state_stopped)
+        self.data.lakeshore.lakeshore_disconnect.connect(self.stopping_scan)
+        self.data.lakeshore.lakeshore_disconnect.connect(self.state_stopwait)
         self.data.finished.connect(self.scan_complete)
         self.data.finished.connect(self.state_stopped)
 
