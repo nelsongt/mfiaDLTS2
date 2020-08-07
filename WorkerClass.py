@@ -16,7 +16,7 @@ class AcquireData(LogObject):
 
     def __init__(self):
         super(AcquireData, self).__init__()
-        
+
         ## CREATE PARAM STRUCTS
         self.sample = []
         self.dlts = []
@@ -41,7 +41,7 @@ class AcquireData(LogObject):
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
             self.init_fail.emit()
             return
-        self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
+        #self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
 
     @pyqtSlot()
     def stop_signal(self):
@@ -58,10 +58,10 @@ class AcquireData(LogObject):
             self.lakeshore.SET_TEMP(current_temp,self.temp.temp_stability,self.temp.time_stability) #Wait for lakeshore to reach set temp
 
             self.generate_log("Capturing transient...","blue")
-            temp_before  = self.lakeshore.sampleSpaceTemperature;
+            temp_before  = self.lakeshore.sampleSpaceTemperature();
     #         %[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia);
     #         [timestamp, sampleCap] = MFIA_CAPACITANCE_DAQ(device,mfia);
-            temp_after = self.lakeshore.sampleSpaceTemperature;
+            temp_after = self.lakeshore.sampleSpaceTemperature();
             self.generate_log("Finished transient for this temperature.","green")
             avg_temp = (temp_before + temp_after) / 2;
     #
@@ -82,12 +82,12 @@ class AcquireData(LogObject):
             elif self.temp.temp_init < self.temp.temp_final:
                 current_temp = current_temp + self.temp.temp_step
             current_num = current_num + 1
-            
+
         if self.lakeshore.stopped == False:
             self.generate_log("Finished data collection, returning to idle temp.","blue")
             self.lakeshore.SET_TEMP(self.temp.temp_idle,self.temp.temp_stability,self.temp.time_stability) # Wait for lakeshore to reach set temp
         elif self.lakeshore.stopped == True:
             self.generate_log("Stop successful.","orange")
         self.finished.emit()
-     
+
 

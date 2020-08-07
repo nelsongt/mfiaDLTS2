@@ -15,10 +15,10 @@ class MFIA(LogObject):
 
     def reset(self,dlts,mfia):
         self.generate_log("Initializing MFIA...","blue")
-        
-    
+
+
         ## Open connection to the ziServer (socket for sync interface)
-        self.ziDAQ = ziPython.ziDAQServer('127.0.0.1',8004,6);    % Use local data server for best performance
+        self.ziDAQ = ziPython.ziDAQServer('127.0.0.1',8004,6)  # Use local data server for best performance
         # Get device name automagically (e.g. 'dev234')
         self.device = self.autoDetect(ziDAQ)
         # or specify manually
@@ -33,7 +33,7 @@ class MFIA(LogObject):
         vrange = 10;
         irange = 0.0001;
         phase_offset = 0;
-    
+
         # Setup IA module
         self.ziDAQ.setInt(String.Format("/{0}/imps/0/mode", device), 1)
         self.ziDAQ.setInt(String.Format("/{0}/system/impedance/filter", device), 1);
@@ -149,8 +149,8 @@ class MFIA(LogObject):
     #     fprintf('Initialized MFIA %s ...\n', device)
     #     end
 
-    def MFIA_CAPACITANCE_DAQ(self,deviceId,mfia):
-        
+    #def MFIA_CAPACITANCE_DAQ(self,deviceId,mfia):
+
         #
         # if ~exist('deviceId', 'var')
         #     error(['No value for device_id specified. The first argument to the ' ...
