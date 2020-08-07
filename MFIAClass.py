@@ -1,6 +1,8 @@
 # Copyright George Nelson 2020
 # MFIAclass, generates instances of MFIA virtual interfaces
 
+import zhinst.utils
+
 from LogClass import LogObject
 
 
@@ -8,45 +10,61 @@ class MFIA(LogObject):
     def __init__(self):
         super(MFIA, self).__init__()
         self.data = []
+        self.device = []
+        self.ziDAQ = []
 
     def reset(self,dlts,mfia):
         self.generate_log("Initializing MFIA...","blue")
+        
+    
+        ## Open connection to the ziServer (socket for sync interface)
+        self.ziDAQ = ziPython.ziDAQServer('127.0.0.1',8004,6);    % Use local data server for best performance
+        # Get device name automagically (e.g. 'dev234')
+        self.device = self.autoDetect(ziDAQ)
+        # or specify manually
+        #device = 'dev3327'
 
-    #     clear ziDAQ;
-    #     device = 0;
-    #
-    #     %% Open connection to the ziServer (socket for sync interface)
-    #     ziDAQ ('connect','127.0.0.1',8004,6);    % Use local data server for best performance
-    #     %ziDAQ ('connect','169.254.40.222',8004,5);
-    #     % Get device name automagically (e.g. 'dev234')
-    #     device = autoDetect();
-    #     % or specify manually
-    #     %device = 'dev3327';
-    #
-    #
-    #     % Enable IA module
+
+        # Enable IA module
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/enable", device), 1);
     #     ziDAQ('setInt', ['/' device '/imps/0/enable'], 1);
     #
     #
-    #     vrange = 10;
-    #     irange = 0.0001;
-    #     phase_offset = 0;
-    #
-    #     % Setup IA module
+        vrange = 10;
+        irange = 0.0001;
+        phase_offset = 0;
+    
+        # Setup IA module
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/mode", device), 1)
+        self.ziDAQ.setInt(String.Format("/{0}/system/impedance/filter", device), 1);
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/model", device), 0);
     #     ziDAQ('setInt', ['/' device '/imps/0/mode'], 1);
     #     ziDAQ('setInt', ['/' device '/system/impedance/filter'], 1);
     #     ziDAQ('setInt', ['/' device '/imps/0/model'], 0);
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/auto/output", device), 0)
+        self.ziDAQ.setInt(String.Format("/{0}/system/impedance/precision", device), 0)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/maxbandwidth", device), 1000)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/omegasuppression", device), 60)
     #     ziDAQ('setInt', ['/' device '/imps/0/auto/output'], 0);
     #     ziDAQ('setInt', ['/' device '/system/impedance/precision'], 0);
     #     ziDAQ('setDouble', ['/' device '/imps/0/maxbandwidth'], 1000);
     #     ziDAQ('setDouble', ['/' device '/imps/0/omegasuppression'], 60);
     #
-    #     % Input settings, set to current and set range
+        # Input settings, set to current and set range
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/auto/inputrange", device), 0)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/current/range", device), irange)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/voltage/range", device), vrange)
     #     ziDAQ('setInt', ['/' device '/imps/0/auto/inputrange'], 0);
     #     ziDAQ('setDouble', ['/' device '/imps/0/current/range'], irange);
     #     %ziDAQ('setDouble', ['/' device '/imps/0/voltage/range'], vrange);
     #
-    #     % Lock in params & filtering
+        # Lock in params & filtering
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/demod/sinc", device), 1)
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/demod/order", device), 8)
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/auto/bw", device), 0)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/phaseshift", device), phase_offset)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/timeconstant", device), mfia.time_constant)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/harmonic", device), 1)
     #     ziDAQ('setInt', ['/' device '/imps/0/demod/sinc'], 1);
     #     ziDAQ('setInt', ['/' device '/imps/0/demod/order'], 8);
     #     ziDAQ('setInt', ['/' device '/imps/0/auto/bw'], 0);
@@ -54,11 +72,19 @@ class MFIA(LogObject):
     #     ziDAQ('setDouble', ['/' device '/imps/0/demod/timeconstant'], mfia.time_constant);
     #     ziDAQ('setDouble', ['/' device '/imps/0/demod/harmonic'], 1);
     #
-    #     % Oscillator settings
+        # Oscillator settings
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/freq", device), mfia.ac_freq)
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/output/amplitude", device), mfia.ac_ampl)
     #     ziDAQ('setDouble', ['/' device '/imps/0/freq'], mfia.ac_freq);
     #     ziDAQ('setDouble', ['/' device '/imps/0/output/amplitude'], mfia.ac_ampl);
     #
-    #     % Output settings
+        # Output settings
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/output/range", device), vrange)
+        self.ziDAQ.setInt(String.Format("/{0}/imps/0/output/on", device), 1)
+        if dlts.pulse_height:
+            self.ziDAQ.setInt(String.Format("/{0}/sigouts/0/add", device), 1)
+        else:
+            self.ziDAQ.setInt(String.Format("/{0}/sigouts/0/add", device), 0)
     #     ziDAQ('setDouble', ['/' device '/imps/0/output/range'], vrange);
     #     ziDAQ('setInt', ['/' device '/imps/0/output/on'], 1);
     #     if mfia.pulse_height  % Check if a pulse bias is set, if so add to ss bias
@@ -66,6 +92,13 @@ class MFIA(LogObject):
     #     else
     #         ziDAQ('setInt', ['/' device '/sigouts/0/add'], 0);
     #     end
+        self.ziDAQ.setDouble(String.Format("/{0}/sigouts/0/offset", device), dlts.ss_bias)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/thresholds/0/input", device), 59)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/thresholds/1/input", device), 59)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/thresholds/0/inputchannel", device), 0)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/thresholds/1/inputchannel", device), 0)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/logicunits/0/inputs/0/not", device), 1)
+        self.ziDAQ.setInt(String.Format("/{0}/tu/logicunits/1/inputs/0/not", device), 1)
     #     ziDAQ('setDouble', ['/' device '/sigouts/0/offset'], dlts.ss_bias);
     #     ziDAQ('setInt', ['/' device '/tu/thresholds/0/input'], 59);
     #     ziDAQ('setInt', ['/' device '/tu/thresholds/1/input'], 59);
@@ -73,26 +106,36 @@ class MFIA(LogObject):
     #     ziDAQ('setInt', ['/' device '/tu/thresholds/1/inputchannel'], 0);
     #     ziDAQ('setInt', ['/' device '/tu/logicunits/0/inputs/0/not'], 1);
     #     ziDAQ('setInt', ['/' device '/tu/logicunits/1/inputs/0/not'], 1);
+        self.ziDAQ.setDouble(String.Format("/{0}/tu/thresholds/0/deactivationtime", device), dlts.trns_length+0.001)
+        self.ziDAQ.setDouble(String.Format("/{0}/tu/thresholds/0/activationtime", device), dlts.pulse_width)
+        self.ziDAQ.setDouble(String.Format("/{0}/tu/thresholds/1/deactivationtime", device), 0)
+        self.ziDAQ.setDouble(String.Format("/{0}/tu/thresholds/1/activationtime", device), 0)
     #     ziDAQ('setDouble', ['/' device '/tu/thresholds/0/deactivationtime'], dlts.trns_length+0.001); #add 1ms buffer time
     #     ziDAQ('setDouble', ['/' device '/tu/thresholds/0/activationtime'], dlts.pulse_width);
     #     ziDAQ('setDouble', ['/' device '/tu/thresholds/1/deactivationtime'], 0);
     #     ziDAQ('setDouble', ['/' device '/tu/thresholds/1/activationtime'], 0);
+        self.ziDAQ.setInt(String.Format("/{0}/auxouts/0/outputselect", device), 13)
+        self.ziDAQ.setInt(String.Format("/{0}/auxouts/1/outputselect", device), 13)
+        self.ziDAQ.setInt(String.Format("/{0}/auxouts/0/demodselect", device), 0)
+        self.ziDAQ.setInt(String.Format("/{0}/auxouts/1/demodselect", device), 1)
     #     ziDAQ('setInt', ['/' device '/auxouts/0/outputselect'], 13);
     #     ziDAQ('setInt', ['/' device '/auxouts/1/outputselect'], 13);
     #     ziDAQ('setInt', ['/' device '/auxouts/0/demodselect'], 0);
     #     ziDAQ('setInt', ['/' device '/auxouts/1/demodselect'], 1);
+        self.ziDAQ.setDouble(String.Format("/{0}/auxouts/0/scale", device), dlts.pulse_height)
+        self.ziDAQ.setDouble(String.Format("/{0}/auxouts/0/offset", device), 0)
+        self.ziDAQ.setDouble(String.Format("/{0}/auxouts/1/scale", device), -5.0)
+        self.ziDAQ.setDouble(String.Format("/{0}/auxouts/1/offset", device), 5.0)
     #     ziDAQ('setDouble', ['/' device '/auxouts/0/scale'], dlts.pulse_height);
     #     ziDAQ('setDouble', ['/' device '/auxouts/0/offset'], 0);
     #     ziDAQ('setDouble', ['/' device '/auxouts/1/scale'], -5.0);
     #     ziDAQ('setDouble', ['/' device '/auxouts/1/offset'], 5.0);
     #
-    #     % Data stream settings
+        # Data stream settings
+        self.ziDAQ.setDouble(String.Format("/{0}/imps/0/demod/rate", device), mfia.sample_rate)
     #     ziDAQ('setDouble', ['/' device '/imps/0/demod/rate'], mfia.sample_rate);
-    #
-    #     end
-    #
-    #     % end of main function %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    #
+
+
     # def autoDetect(self,device):
     #     nodes = lower(ziDAQ('listNodes','/'));
     #     dutIndex = strmatch('dev', nodes);
@@ -106,12 +149,8 @@ class MFIA(LogObject):
     #     fprintf('Initialized MFIA %s ...\n', device)
     #     end
 
-    # def MFIA_CAPACITANCE_DAQ(self,deviceId,mfia):
-        # %deviceId='dev3327';
-        # %sampleTime=10;
-        # %transientLength=0.15;
-        #
-        # %% George Nelson Oct 2019, based on ZI example script
+    def MFIA_CAPACITANCE_DAQ(self,deviceId,mfia):
+        
         #
         # if ~exist('deviceId', 'var')
         #     error(['No value for device_id specified. The first argument to the ' ...

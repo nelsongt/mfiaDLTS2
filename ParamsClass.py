@@ -17,11 +17,6 @@ class TempParams(object):
 
     #def __init__(self):
 
-class LakeshoreParams(object):
-    __slots__ = ['ss_bias', 'pulse_height']
-
-    #def __init__(self):
-
 class MFIAParams(object):
     __slots__ = ['sample_rate', 'ac_freq', 'ac_ampl', 'time_constant']
 
