@@ -1,8 +1,8 @@
 # Copyright George Nelson 2020
 # Lakeshore class, generates instances of Lakeshore virtual interface
 
-import lakeshore
 import time
+from pymeasure.instruments.lakeshore import LakeShore331
 
 from LogClass import LogObject
 
@@ -54,16 +54,16 @@ class Lakeshore(LogObject):
     def isLakeshoreInstalled(self):
         # Initialize communication to temperature controller.
         try:
-            obj1 = lakeshore.Model335(9600)
+            obj1 = LakeShore331("GPIB0::12")
         except:
             return 0
         #if not obj1:
         #    return 0
 
-        #try:
-        #    obj1 = rm.open_resource('GPIB0::12::INSTR')
-        #except:
-        #    return 0
+        try:
+            print(obj1.id)
+        except:
+            return 0
 
 
         #     obj1 = instrfind('Type', 'gpib', 'BoardIndex', 0, 'PrimaryAddress', 12);
