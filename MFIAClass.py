@@ -37,7 +37,7 @@ def toc2(tempBool=True):
     # Prints the time difference yielded by generator instance TicToc2
     tempTimeInterval = next(TicToc2)
     if tempBool:
-    print( "Elapsed time 2: %f seconds.\n" %tempTimeInterval )
+        print( "Elapsed time 2: %f seconds.\n" %tempTimeInterval )
 
 def tic2():
     # Records a time in TicToc2, marks the beginning of a time interval
@@ -255,13 +255,13 @@ class MFIA(LogObject):
         tic()
         tic2()
         dt_read = 2.1
-        transferNotFinished = !self.ziDAQ.finished()
-        while transferNotFinished && toc() < timeout
-             time.sleep(0.05)
-             # Perform an intermediate readout of the data. the data between reads is
-             # not acculmulated in the module - it is cleared, so that the next time
-             # you do a read you (should) only get the triggers that came inbetween the
-             # two reads.
+        transferNotFinished = not bool(self.ziDAQ.finished())
+        while transferNotFinished and toc() < timeout:
+            time.sleep(0.05)
+            # Perform an intermediate readout of the data. the data between reads is
+            # not acculmulated in the module - it is cleared, so that the next time
+            # you do a read you (should) only get the triggers that came inbetween the
+            # two reads.
             if toc2() > dt_read:
                 data = self.ziDAQ.read()
                 #if ziCheckPathInData(data, ['/' deviceId '/imps/0/sample_param1'])
@@ -270,13 +270,14 @@ class MFIA(LogObject):
                     total_triggers = total_triggers + loop_triggers
                     # save data, using some idea of mine that might save CPU time
                     capData = []
-                    for i = 1:loop_triggers:
-                        capData = [capData; data.(deviceId).imps(1).sample_param1{1,i}.value]
+                    for i in loop_triggers:
+                        #capData.append(data.deviceId.imps(1).sample_param1{1,i}.value)
+                        capData = data
                         #timeStamp = []; %TODO
                     sampleCap.append(capData)
                 #cprintf('blue','Acquired %d of total %d transients: %.1f%% (elapsed time %.3f s)\n', total_triggers, trigger_count, 100*ziDAQ('progress', h),toc(t0));
                 tRead = tic2()
-                transferNotFinished = !h.finished()
+                transferNotFinished = not h.finished()
 
         # Timeout check
         if toc() > timeout:
@@ -309,11 +310,11 @@ class MFIA(LogObject):
         sum = numpy.zeros(realNumSamp,transients-1);
         int_i = 1+rejectSamples;
         int_f = numSamples;
-        for z = 1:transients-1   #TODO first transient is always lead by NaN?
-            transient = capArray_pF(z+1,int_i:int_f)
+        for z in transients-1:   #TODO first transient is always lead by NaN?
+            transient = capArray_pF[z+1,int_i:int_f]
             #plot(time,transient,'Color',color(z,:))
             #hold on
-            sum(:,z) = transient
+            sum[:,z] = transient
 
         averagedTransient = numpy.nanmean(sum)
         return averagedTransient
