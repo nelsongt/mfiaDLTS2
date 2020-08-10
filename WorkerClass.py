@@ -17,6 +17,11 @@ class AcquireData(LogObject):
     def __init__(self):
         super(AcquireData, self).__init__()
 
+        ## LOCAL VARS
+        self.device_id = []
+        self.cap_data = []
+        self.avg_trnst = []
+
         ## CREATE PARAM STRUCTS
         self.sample = []
         self.dlts = []
@@ -41,7 +46,7 @@ class AcquireData(LogObject):
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
             self.init_fail.emit()
             return
-        #self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
+        self.device_id = self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
 
     @pyqtSlot()
     def stop_signal(self):
@@ -57,13 +62,15 @@ class AcquireData(LogObject):
             time.sleep(1)
             self.lakeshore.SET_TEMP(current_temp,self.temp.temp_stability,self.temp.time_stability) #Wait for lakeshore to reach set temp
 
+            # Capture transient data from MFIA
             self.generate_log("Capturing transient...","blue")
             temp_before  = self.lakeshore.sampleSpaceTemperature();
-    #         %[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia);
-    #         [timestamp, sampleCap] = MFIA_CAPACITANCE_DAQ(device,mfia);
+           #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia);
+            self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.device_id,self.dlts,self.mfia);
             temp_after = self.lakeshore.sampleSpaceTemperature();
-            self.generate_log("Finished transient for this temperature.","green")
             avg_temp = (temp_before + temp_after) / 2;
+            self.generate_log("Finished transient for this temperature.","green")
+
     #
     #         % Find the amount of data loss, if more than a few percent lower duty cycle or lower sampling rate
     #         dataloss = sum(sum(isnan(sampleCap)))/(size(sampleCap,1)*size(sampleCap,2));
