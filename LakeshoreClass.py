@@ -103,14 +103,14 @@ class Lakeshore(LogObject):
         #getCurrentTemp = 290
         getCurrentWait = timeStable
         unstable = False
-        while (abs(getCurrentTemp - setPoint) > tempStable or getCurrentWait >= 0) and self.stopped == False:  # Continuously loop the time and temp stability until both are met
-            while abs(getCurrentTemp - setPoint) > tempStable and self.stopped == False:
+        while (abs(getCurrentTemp - setPoint) > tempStable or getCurrentWait >= 1) and self.stopped == False:  # Continuously loop the time and temp stability until both are met
+            while abs(getCurrentTemp - setPoint) > tempStable and not self.stopped:
                 time.sleep(2)  # Wait for temperature to reach set point
                 getCurrentTemp = self.sampleSpaceTemperature()
                 #getCurrentTemp = setPoint
                 self.generate_log("Current Temp: {:3.2f}. Set point: {:3.2f}. Delta: {:2.2f}.".format(getCurrentTemp,setPoint,getCurrentTemp-setPoint),"blue")
             unstable = False;
-            while getCurrentWait >= 0 and unstable == False and self.stopped == False:
+            while getCurrentWait >= 1 and not unstable and not self.stopped:
                 self.generate_log("Wait for time stability: {:d} s left.".format(getCurrentWait),"blue")
                 time.sleep(1)                          # Wait 1 second
                 getCurrentWait = getCurrentWait - 1          # Subtract one from our counter
@@ -118,7 +118,7 @@ class Lakeshore(LogObject):
                 if abs(getCurrentTemp - setPoint) > tempStable:  # check again for temp stability, if not stable then flag for restart
                     unstable = True
 
-            if unstable == True:  # check again for temp stability, if not stable then restart process
+            if unstable:  # check again for temp stability, if not stable then restart process
                 getCurrentWait = timeStable
                 self.generate_log("Temperature not time stable (refine PID?), restarting stability process...","orange") #TODO color [0.9100 0.4100 0.1700]? orange?
         if self.stopped == False:

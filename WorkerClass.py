@@ -1,8 +1,9 @@
 # Copyright George Nelson 2020
 # Worker thread
 
-import math
 import time
+import math
+import numpy
 from PyQt5.QtCore import pyqtSignal,pyqtSlot
 
 from LogClass import LogObject
@@ -18,7 +19,7 @@ class AcquireData(LogObject):
         super(AcquireData, self).__init__()
 
         ## LOCAL VARS
-        self.device_id = []
+        #self.device_id = []
         self.cap_data = []
         self.avg_trnst = []
 
@@ -46,7 +47,7 @@ class AcquireData(LogObject):
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
             self.init_fail.emit()
             return
-        self.device_id = self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
+        self.device.reset(self.dlts,self.mfia) # Now initialize MFIA
 
     @pyqtSlot()
     def stop_signal(self):
@@ -57,43 +58,43 @@ class AcquireData(LogObject):
         current_temp = self.temp.temp_init;
         current_num = 0;
         steps = math.ceil(abs(self.temp.temp_init - self.temp.temp_final)/self.temp.temp_step);
-        while current_num <= steps and self.lakeshore.stopped == False:
+        while current_num <= steps and not self.lakeshore.stopped:
             self.generate_log("Waiting for set point {}... ".format(current_temp),"blue")
             time.sleep(1)
             self.lakeshore.SET_TEMP(current_temp,self.temp.temp_stability,self.temp.time_stability) #Wait for lakeshore to reach set temp
 
-            # Capture transient data from MFIA
-            self.generate_log("Capturing transient...","blue")
-            temp_before  = self.lakeshore.sampleSpaceTemperature();
-           #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia);
-            self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.device_id,self.dlts,self.mfia);
-            temp_after = self.lakeshore.sampleSpaceTemperature();
-            avg_temp = (temp_before + temp_after) / 2;
-            self.generate_log("Finished transient for this temperature.","green")
+            if not self.lakeshore.stopped:
+                # Capture transient data from MFIA
+                self.generate_log("Capturing transient...","blue")
+                temp_before  = self.lakeshore.sampleSpaceTemperature();
+                #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia); #TODO implement constant polling?
+                self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia);
+                temp_after = self.lakeshore.sampleSpaceTemperature();
+                avg_temp = (temp_before + temp_after) / 2;
+                self.generate_log("Finished transient for this temperature.","green")
 
-    #
-    #         % Find the amount of data loss, if more than a few percent lower duty cycle or lower sampling rate
-    #         dataloss = sum(sum(isnan(sampleCap)))/(size(sampleCap,1)*size(sampleCap,2));
-    #         if dataloss
-    #             cprintf('systemcommands', 'Warning: %1.1f%% data loss detected.\n',100*dataloss);
-    #         end
-    #
-    #         %avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia);
-    #         avg_trnst = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia);
-    #
-    #         cprintf('blue', 'Saving transient...\n');
-    #         TRANSIENT_FILE(sample,mfia,current_num,current_temp,avg_temp,avg_trnst);
-    #
+                # Find the amount of data loss, if more than a few percent lower duty cycle or lower sampling rate
+                dataloss = numpy.sum(numpy.isnan(self.cap_data))/numpy.size(self.cap_data)
+                if dataloss:
+                    #cprintf('systemcommands', 'Warning: %1.1f%% data loss detected.\n',100*dataloss);
+                    self.generate_log("Warning: {:1.1f}% data loss detected.".format(dataloss*100),"orange")
+
+        #         %avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia);
+        #         avg_trnst = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia);
+        #
+        #         cprintf('blue', 'Saving transient...\n');
+        #         TRANSIENT_FILE(sample,mfia,current_num,current_temp,avg_temp,avg_trnst);
+        #
             if self.temp.temp_init > self.temp.temp_final:
                 current_temp = current_temp - self.temp.temp_step    # Changes +/- for up vs down scan
             elif self.temp.temp_init < self.temp.temp_final:
                 current_temp = current_temp + self.temp.temp_step
             current_num = current_num + 1
 
-        if self.lakeshore.stopped == False:
+        if not self.lakeshore.stopped:
             self.generate_log("Finished data collection, returning to idle temp.","blue")
             self.lakeshore.SET_TEMP(self.temp.temp_idle,self.temp.temp_stability,self.temp.time_stability) # Wait for lakeshore to reach set temp
-        elif self.lakeshore.stopped == True:
+        elif self.lakeshore.stopped:
             self.generate_log("Stop successful.","orange")
         self.finished.emit()
 
