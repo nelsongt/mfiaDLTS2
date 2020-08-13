@@ -7,6 +7,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 from scientificspin import ScientificDoubleSpinBox
 import pyqtgraph as pg
+import numpy as np
 
 
 class Ui_MainWindow(object):
@@ -305,6 +306,9 @@ class Ui_MainWindow(object):
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setObjectName("graphWidget")
         self.topLayout.addWidget(self.graphWidget)
+        styles = {'color':'r', 'font-size':'20px'}
+        self.graphWidget.setLabel('left', 'ΔC (pF)', **styles)
+        self.graphWidget.setLabel('bottom', 'Sample Number', **styles)
         
         ## LOG WINDOW
         self.logWindow = QtWidgets.QPlainTextEdit()
@@ -402,9 +406,17 @@ class Ui_MainWindow(object):
         self.generate_log("Error: Fake error","red")
         
     def generate_plot(self):
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
-        self.graphWidget.plot(hour, temperature)
+        nPlots = 100
+        nSamples = 500
+        curves = []
+        data = np.random.normal(size=(nPlots*23,nSamples))
+        for idx in range(nPlots):
+            curve = pg.PlotCurveItem(pen=(170-idx,nPlots*4))  #7->17 out of 40
+            self.graphWidget.addItem(curve)
+            #curve.setPos(0,idx*6)
+            curves.append(curve)
+            curves[idx].setData(data[(idx)%data.shape[0]])
+            
         self.generate_log("Data plotted")
         
     def clear_plot(self):

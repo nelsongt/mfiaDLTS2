@@ -14,6 +14,7 @@ from FileClass import FileSave
 
 class AcquireData(LogObject):
     init_fail = pyqtSignal()  # Cannot put signals in constructor(?)
+    graph_update = pyqtSignal()
 
     def __init__(self):
         super(AcquireData, self).__init__()
@@ -42,6 +43,8 @@ class AcquireData(LogObject):
         self.dlts = dltsParam
         self.temp = tempParam
         self.mfia = mfiaParam
+        
+        self.graph_update.emit()
 
         ## INITIALIZE HARDWARE
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
@@ -69,6 +72,7 @@ class AcquireData(LogObject):
                 temp_before  = self.lakeshore.sampleSpaceTemperature();
                 #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia); #TODO implement constant polling?
                 self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia);
+                self.graph_update.emit()
                 temp_after = self.lakeshore.sampleSpaceTemperature();
                 avg_temp = (temp_before + temp_after) / 2;
                 self.generate_log("Finished transient for this temperature.","green")
