@@ -26,7 +26,7 @@ class FileSave(LogObject):
     
 
     #     status = mkdir(strcat(pwd,'\',sample.save_folder));
-        self.save_folder = os.path.join(path,'Data',''.join((sample.name,'_',now.strftime("%d-%m-%Y %H:%M"))))
+        self.save_folder = os.path.join(path,'Data',''.join((sample.name,'_',self.now.strftime("%d-%m-%Y %H:%M"))))
         if not os.path.exists(self.save_folder):
             os.makedirs(self.save_folder)
     #     fid = fopen(fullfile(strcat(pwd,'\',sample.save_folder),fileName),'wt');
