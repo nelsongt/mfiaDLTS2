@@ -83,11 +83,11 @@ class AcquireData(LogObject):
                     #cprintf('systemcommands', 'Warning: %1.1f%% data loss detected.\n',100*dataloss);
                     self.generate_log("Warning: {:1.1f}% data loss detected.".format(dataloss*100),"orange")
 
-        #         %avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia);
-        #         avg_trnst = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia);
-        #
-        #         cprintf('blue', 'Saving transient...\n');
-        #         TRANSIENT_FILE(sample,mfia,current_num,current_temp,avg_temp,avg_trnst);
+                #avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia); #Not implemented in python yet
+                self.file.transient = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia);
+        
+                self.generate_log("Saving transient...","blue")
+                self.file.TRANSIENT_FILE(self.sample,self.dlts,self.mfia,current_num,current_temp,avg_temp)
         #
             if self.temp.temp_init > self.temp.temp_final:
                 current_temp = current_temp - self.temp.temp_step    # Changes +/- for up vs down scan
