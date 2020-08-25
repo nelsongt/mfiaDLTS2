@@ -88,14 +88,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data.reset(self.sample,self.dlts,self.temp,self.mfia)
 
     def graph_data(self):
-        nPlots = 100
-        nSamples = 16000
+        #nPlots = 100
+        nPlots = len(self.data.cap_data,1)
+        #nSamples = 16000
+        nSamples = len(self.data.cap_data,2)
         #y = np.random.normal(size=(120,20000), scale=0.2) + np.arange(120)[:,np.newaxis]
         #x = np.empty((120,20000))
         #x[:] = np.arange(20000)[np.newaxis,:]
         now = pg.ptime.time()
         if self.first_plot:
-            data = np.random.normal(size=(nPlots,nSamples))
+            #data = np.random.normal(size=(nPlots,nSamples))
             self.graphWidget.disableAutoRange()
             self.graphWidget.setYRange(-5, 160)
             self.graphWidget.setXRange(0, nSamples)
@@ -106,16 +108,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 curve.setPos(0,idx*0)
                 self.curves.append(curve)
                 #lines = MultiLine(x,y)
-                self.curves[idx].setData(data[(idx)%data.shape[0]]) 
+                self.curves[idx].setData(self.data.cap_data[(idx)%data.shape[0]]) 
             #lines = MultiLine(x,y)
             #self.graphWidget.addItem(lines)
                 
             self.first_plot = False
         else:
-            data = np.random.normal(size=(nPlots,nSamples))
+            #data = np.random.normal(size=(nPlots,nSamples))
             print('hi')
             for idx in range(nPlots):
-                self.curves[idx].setData(data[(idx)%data.shape[0]]) 
+                self.curves[idx].setData(self.data.cap_data[(idx)%data.shape[0]]) 
         print("Plot time: %0.2f sec" % (pg.ptime.time()-now))
         app.processEvents()
 

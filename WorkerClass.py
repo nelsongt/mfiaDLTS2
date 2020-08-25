@@ -71,8 +71,7 @@ class AcquireData(LogObject):
                 self.generate_log("Capturing transient...","blue")
                 temp_before  = self.lakeshore.sampleSpaceTemperature();
                 #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia); #TODO implement constant polling?
-                self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia);
-                self.graph_update.emit()
+                self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia)*1e12
                 temp_after = self.lakeshore.sampleSpaceTemperature();
                 avg_temp = (temp_before + temp_after) / 2;
                 self.generate_log("Finished transient for this temperature.","green")
@@ -84,7 +83,8 @@ class AcquireData(LogObject):
                     self.generate_log("Warning: {:1.1f}% data loss detected.".format(dataloss*100),"orange")
 
                 #avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia); #Not implemented in python yet
-                self.file.transient = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia);
+                self.file.transient = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia)
+                self.graph_update.emit()
         
                 self.generate_log("Saving transient...","blue")
                 self.file.TRANSIENT_FILE(self.sample,self.dlts,self.mfia,current_num,current_temp,avg_temp)

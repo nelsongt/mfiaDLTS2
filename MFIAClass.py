@@ -12,7 +12,6 @@ from LogClass import LogObject
 class MFIA(LogObject):
     def __init__(self):
         super(MFIA, self).__init__()
-        self.data = []
         self.ziDAQ = []
 
     def reset(self,dlts,mfia):
@@ -269,9 +268,9 @@ class MFIA(LogObject):
 
     def MFIA_TRANSIENT_AVERAGER_DAQ(self,capArray,mfia):
         SR = mfia.sample_rate
-        capArray_pF = capArray*1e12
-        transients = len(capArray_pF,1)
-        numSamples = len(capArray_pF,2)  #length of transient in data points
+        #capArray_pF = capArray*1e12
+        transients = len(capArray,1)
+        numSamples = len(capArray,2)  #length of transient in data points
         rejectSamples = 4 #ength of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
         realNumSamp = numSamples - rejectSamples
         times = numpy.linspace(1/SR,(1/SR)*realNumSamp,realNumSamp)
@@ -280,7 +279,7 @@ class MFIA(LogObject):
         int_i = 1+rejectSamples;
         int_f = numSamples;
         for z in transients-1:   #TODO first transient is always lead by NaN?
-            transient = capArray_pF[z+1,int_i:int_f]
+            transient = capArray[z+1,int_i:int_f]
             #plot(time,transient,'Color',color(z,:))
             #hold on
             sum[:,z] = transient
