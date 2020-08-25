@@ -21,7 +21,7 @@ class AcquireData(LogObject):
 
         ## LOCAL VARS
         #self.device_id = []
-        self.cap_data = []
+        self.cap_data = numpy.array([])
         self.avg_trnst = []
 
         ## CREATE PARAM STRUCTS
@@ -35,7 +35,7 @@ class AcquireData(LogObject):
         self.device = MFIA()
 
         ## CREATE FILE SAVE SUBWORKER
-        self.file = FileSave(1)
+        self.file = FileSave()
 
     def reset(self,sampleParam,dltsParam,tempParam,mfiaParam):
         ## SYNC PARAM STRUCTS FROM UI
@@ -43,8 +43,13 @@ class AcquireData(LogObject):
         self.dlts = dltsParam
         self.temp = tempParam
         self.mfia = mfiaParam
-        
+
         self.graph_update.emit()
+        self.cap_data = numpy.array([])
+
+        ## CREATE FILE SAVE SUBWORKER
+        del self.file
+        self.file = FileSave()
 
         ## INITIALIZE HARDWARE
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
@@ -54,13 +59,14 @@ class AcquireData(LogObject):
 
     @pyqtSlot()
     def stop_signal(self):
-        self.lakeshore.stopped = True;
+        self.lakeshore.stopped = True
 
     @pyqtSlot()
     def do_scan(self):
+        self.cap_data = numpy.array([])
         current_temp = self.temp.temp_init;
         current_num = 0;
-        steps = math.ceil(abs(self.temp.temp_init - self.temp.temp_final)/self.temp.temp_step);
+        steps = math.ceil(abs(self.temp.temp_init - self.temp.temp_final)/self.temp.temp_step)
         while current_num <= steps and not self.lakeshore.stopped:
             self.generate_log("Waiting for set point {}... ".format(current_temp),"blue")
             time.sleep(1)
@@ -69,11 +75,11 @@ class AcquireData(LogObject):
             if not self.lakeshore.stopped:
                 # Capture transient data from MFIA
                 self.generate_log("Capturing transient...","blue")
-                temp_before  = self.lakeshore.sampleSpaceTemperature();
+                temp_before  = self.lakeshore.sampleSpaceTemperature()
                 #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia); #TODO implement constant polling?
                 self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia)*1e12
-                temp_after = self.lakeshore.sampleSpaceTemperature();
-                avg_temp = (temp_before + temp_after) / 2;
+                temp_after = self.lakeshore.sampleSpaceTemperature()
+                avg_temp = (temp_before + temp_after) / 2
                 self.generate_log("Finished transient for this temperature.","green")
 
                 # Find the amount of data loss, if more than a few percent lower duty cycle or lower sampling rate
@@ -83,9 +89,9 @@ class AcquireData(LogObject):
                     self.generate_log("Warning: {:1.1f}% data loss detected.".format(dataloss*100),"orange")
 
                 #avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia); #Not implemented in python yet
-                self.file.transient = MFIA_TRANSIENT_AVERAGER_DAQ(sampleCap,mfia)
+                self.file.transient = self.device.MFIA_TRANSIENT_AVERAGER_DAQ(self.cap_data,self.mfia)
                 self.graph_update.emit()
-        
+                
                 self.generate_log("Saving transient...","blue")
                 self.file.TRANSIENT_FILE(self.sample,self.dlts,self.mfia,current_num,current_temp,avg_temp)
         #

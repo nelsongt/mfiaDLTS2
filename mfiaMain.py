@@ -101,7 +101,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.graphWidget.disableAutoRange()
             self.graphWidget.setYRange(-5, 160)
             self.graphWidget.setXRange(0, nSamples)
-                        
+
             for idx in range(nPlots):
                 curve = pg.PlotCurveItem(pen=(170-idx,nPlots*4))  #7->17 out of 40
                 self.graphWidget.addItem(curve)
@@ -111,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.curves[idx].setData(self.data.cap_data[(idx)%data.shape[0]]) 
             #lines = MultiLine(x,y)
             #self.graphWidget.addItem(lines)
-                
+
             self.first_plot = False
         else:
             #data = np.random.normal(size=(nPlots,nSamples))

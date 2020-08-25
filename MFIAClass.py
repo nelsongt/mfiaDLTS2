@@ -269,22 +269,26 @@ class MFIA(LogObject):
     def MFIA_TRANSIENT_AVERAGER_DAQ(self,capArray,mfia):
         SR = mfia.sample_rate
         #capArray_pF = capArray*1e12
-        transients = len(capArray,1)
-        numSamples = len(capArray,2)  #length of transient in data points
-        rejectSamples = 4 #ength of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
+        #transients = capArray.shape[0]
+        numSamples = capArray.shape[1]  #length of transient in data points
+        rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
         realNumSamp = numSamples - rejectSamples
         times = numpy.linspace(1/SR,(1/SR)*realNumSamp,realNumSamp)
 
-        sum = numpy.zeros(realNumSamp,transients-1);
-        int_i = 1+rejectSamples;
-        int_f = numSamples;
-        for z in transients-1:   #TODO first transient is always lead by NaN?
-            transient = capArray[z+1,int_i:int_f]
+        #sum = numpy.zeros((realNumSamp,transients))
+        #print(sum.shape)
+        #int_i = rejectSamples;
+        #int_f = numSamples;
+        #for z in range(transients):   #TODO first transient is always lead by NaN?
+        #    transient = capArray_pF[z,int_i:int_f]
             #plot(time,transient,'Color',color(z,:))
             #hold on
-            sum[:,z] = transient
+        #    sum[:,z] = transient
 
-        averagedTransient = numpy.nanmean(sum)
+        sum = numpy.nanmean(capArray_pF,axis=0)
+        print(sum.shape)
+        #averagedTransient = numpy.nanmean(sum)
+        averagedTransient = sum[rejectSamples:numSamples]
         return averagedTransient
 
         # Transient averaging & plotting
