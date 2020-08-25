@@ -8,29 +8,30 @@ from LogClass import LogObject
 
 
 class FileSave(LogObject):
-    def __init__(self,sample):
+    def __init__(self):
         super(FileSave, self).__init__()
         self.transient = []
-        self.now = datetime.datetime.now()
-        path = os.path.abspath(os.path.dirname(__file__))
+        now = datetime.datetime.now()
+        self.nowString = now.strftime("%d-%m-%Y-%H-%M-%S")
+        self.path = os.path.abspath(os.path.dirname(__file__))
         self.save_folder = []
 
     def TRANSIENT_FILE(self,sample,dlts,mfia,currentNum,setTemperature,avgTemperature):
         #TransientFile Saves transient data to LDLTS compatible iso file
 
     #     fileName = strcat(sample.name,'_',num2str(currentNum),'_',num2str(setTemperature),'.iso');
-        fileName = ''.join((sample.name,'_',num2str(currentNum),'_',num2str(setTemperature),'.iso'))
+        fileName = ''.join((sample.name,'_',str(currentNum),'_',str(setTemperature),'.iso'))
     #     fileDate = datestr(now,'dd-mm-yyyy  HH:MM');
         fileNow = datetime.datetime.now()
         fileDate = fileNow.strftime("%d-%m-%Y %H:%M")
-    
+
 
     #     status = mkdir(strcat(pwd,'\',sample.save_folder));
-        self.save_folder = os.path.join(path,'Data',''.join((sample.name,'_',self.now.strftime("%d-%m-%Y %H:%M"))))
+        self.save_folder = os.path.join(self.path,'Data',''.join((sample.name,'_',self.nowString)))
         if not os.path.exists(self.save_folder):
             os.makedirs(self.save_folder)
     #     fid = fopen(fullfile(strcat(pwd,'\',sample.save_folder),fileName),'wt');
-        fid = open(os.path.join(self.save_folder,fileName,'wt'))
+        fid = open(os.path.join(self.save_folder,fileName),'wt')
     #     fprintf(fid, '[general]\n');
         fid.write('[general]\n')
     #     fprintf(fid, 'software=mfiaDLTS v1.0\n');  %TODO: check if compat. w/ LDLTS software
@@ -110,7 +111,7 @@ class FileSave(LogObject):
     #     fprintf(fid, 'Sampling Rate= %d\n', mfia.sample_rate);
         fid.write('Sampling Rate= {:d}\n'.format(mfia.sample_rate))
     #     fprintf(fid, 'No samples= %d\n', length(transient));
-        fid.write('No samples= %d\n'.format(len(self.transient)))
+        fid.write('No samples= {:d}\n'.format(len(self.transient)))
     #     fprintf(fid, 'No scans= 150\n');
         fid.write('No scans= 150\n')  #TODO
     #     fprintf(fid, 'gain= 1\n');
@@ -150,7 +151,7 @@ class FileSave(LogObject):
     #     fprintf(fid, 'temperature= %f\n', avgTemperature);
         fid.write('temperature= {:f}\n'.format(avgTemperature))
     #     fprintf(fid, 'temperatureSet= %d\n', setTemperature);
-        fid.write('temperatureSet= {:d}\n'.format(setTemperature))
+        fid.write('temperatureSet= {:f}\n'.format(setTemperature))
     #     fprintf(fid, 'magnetic field= 0\n');
         fid.write('magnetic field= 0\n')
     #     fprintf(fid, 'pressure= 0\n');
@@ -169,7 +170,7 @@ class FileSave(LogObject):
     #         fprintf(fid, ' %f \n', transient(i)');
     #     end
         for i in range(len(self.transient)):
-            fid.write(' {:f} \n',format(self.transient[i]))
+            fid.write(' {:f} \n'.format(self.transient[i]))
     #     fclose(fid);
         fid.close()
 
