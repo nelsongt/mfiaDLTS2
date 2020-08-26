@@ -44,12 +44,13 @@ class AcquireData(LogObject):
         self.temp = tempParam
         self.mfia = mfiaParam
 
-        self.graph_update.emit()
         self.cap_data = numpy.array([])
 
         ## CREATE FILE SAVE SUBWORKER
         del self.file
         self.file = FileSave()
+
+        #self.graph_update.emit()
 
         ## INITIALIZE HARDWARE
         if self.lakeshore.reset() == False: # Now initialize Lakeshore
@@ -77,7 +78,7 @@ class AcquireData(LogObject):
                 self.generate_log("Capturing transient...","blue")
                 temp_before  = self.lakeshore.sampleSpaceTemperature()
                 #[timestamp, sampleCap] = MFIA_CAPACITANCE_POLL(device,mfia); #TODO implement constant polling?
-                self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia)*1e12
+                self.cap_data = self.device.MFIA_CAPACITANCE_DAQ(self.dlts,self.mfia)
                 temp_after = self.lakeshore.sampleSpaceTemperature()
                 avg_temp = (temp_before + temp_after) / 2
                 self.generate_log("Finished transient for this temperature.","green")
@@ -91,10 +92,10 @@ class AcquireData(LogObject):
                 #avg_trnst = MFIA_TRANSIENT_AVERAGER_POLL(sampleCap,mfia); #Not implemented in python yet
                 self.file.transient = self.device.MFIA_TRANSIENT_AVERAGER_DAQ(self.cap_data,self.mfia)
                 self.graph_update.emit()
-                
+
                 self.generate_log("Saving transient...","blue")
                 self.file.TRANSIENT_FILE(self.sample,self.dlts,self.mfia,current_num,current_temp,avg_temp)
-        #
+
             if self.temp.temp_init > self.temp.temp_final:
                 current_temp = current_temp - self.temp.temp_step    # Changes +/- for up vs down scan
             elif self.temp.temp_init < self.temp.temp_final:

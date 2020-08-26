@@ -89,9 +89,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def graph_data(self):
         #nPlots = 100
-        nPlots = len(self.data.cap_data,1)
+        nPlots = self.data.cap_data.shape[1]
         #nSamples = 16000
-        nSamples = len(self.data.cap_data,2)
+        nSamples = self.data.cap_data.shape[0]
         #y = np.random.normal(size=(120,20000), scale=0.2) + np.arange(120)[:,np.newaxis]
         #x = np.empty((120,20000))
         #x[:] = np.arange(20000)[np.newaxis,:]
@@ -99,16 +99,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.first_plot:
             #data = np.random.normal(size=(nPlots,nSamples))
             self.graphWidget.disableAutoRange()
-            self.graphWidget.setYRange(-5, 160)
+            self.graphWidget.setYRange(np.nanmin(self.data.cap_data), np.nanmax(self.data.cap_data))
             self.graphWidget.setXRange(0, nSamples)
 
             for idx in range(nPlots):
                 curve = pg.PlotCurveItem(pen=(170-idx,nPlots*4))  #7->17 out of 40
                 self.graphWidget.addItem(curve)
-                curve.setPos(0,idx*0)
                 self.curves.append(curve)
                 #lines = MultiLine(x,y)
-                self.curves[idx].setData(self.data.cap_data[(idx)%data.shape[0]]) 
+                self.curves[idx].setData(self.data.cap_data[:,idx])
+            curve = pg.PlotCurveItem(pen='r')
+            self.graphWidget.addItem(curve)
+            self.curves.append(curve)
+            self.curves[nPlots].setData(self.data.file.transient)
             #lines = MultiLine(x,y)
             #self.graphWidget.addItem(lines)
 
@@ -116,8 +119,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             #data = np.random.normal(size=(nPlots,nSamples))
             print('hi')
+            self.graphWidget.setYRange(np.nanmin(self.data.cap_data), np.nanmax(self.data.cap_data))
+            self.graphWidget.setXRange(0, nSamples)
             for idx in range(nPlots):
-                self.curves[idx].setData(self.data.cap_data[(idx)%data.shape[0]]) 
+                self.curves[idx].setData(self.data.cap_data[:,idx])
+            self.curves[nPlots].setData(self.data.file.transient)
         print("Plot time: %0.2f sec" % (pg.ptime.time()-now))
         app.processEvents()
 
@@ -126,9 +132,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def stopping_scan(self):
         self.generate_log("Stop signal sent. Please wait...","orange")
-        self.data.lakeshore.stopped = True;
+        self.data.lakeshore.stopped = True
 
     def scan_complete(self):
+        self.first_plot = True
+        self.curves = []
         self.generate_log("All done.","green")
 
 

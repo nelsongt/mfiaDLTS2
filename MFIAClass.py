@@ -13,10 +13,12 @@ class MFIA(LogObject):
     def __init__(self):
         super(MFIA, self).__init__()
         self.ziDAQ = []
+        self.rejectSamples = 4
 
     def reset(self,dlts,mfia):
         self.generate_log("Initializing MFIA...","blue")
         self.ziDAQ = []
+        self.rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
 
         ## Open connection to the ziServer (socket for sync interface)
         self.ziDAQ = ziPython.ziDAQServer('127.0.0.1',8004,6)  # Use local data server for best performance
@@ -263,17 +265,27 @@ class MFIA(LogObject):
         h.unsubscribe('/%s/imps/0/sample.param1' %deviceId)
         h.clear()
 
-        return sampleCap
+        transients = sampleCap.shape[0]
+        print(transients)
+        numSamples = sampleCap.shape[1]  #length of transient in data points
+        print(numSamples)
+        realNumSamp = numSamples - self.rejectSamples
+        reshapedCap = numpy.zeros((realNumSamp,transients))
+        for z in range(transients):   #TODO first transient is always lead by NaN?
+            transient = sampleCap[z,self.rejectSamples:numSamples]
+            reshapedCap[:,z] = transient
+
+        return reshapedCap*1e12
 
 
     def MFIA_TRANSIENT_AVERAGER_DAQ(self,capArray,mfia):
-        SR = mfia.sample_rate
+        #SR = mfia.sample_rate
         #capArray_pF = capArray*1e12
         #transients = capArray.shape[0]
-        numSamples = capArray.shape[1]  #length of transient in data points
-        rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
-        realNumSamp = numSamples - rejectSamples
-        times = numpy.linspace(1/SR,(1/SR)*realNumSamp,realNumSamp)
+        #numSamples = capArray.shape[1]  #length of transient in data points
+        #rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
+        #realNumSamp = numSamples - rejectSamples
+        #times = numpy.linspace(1/SR,(1/SR)*realNumSamp,realNumSamp)
 
         #sum = numpy.zeros((realNumSamp,transients))
         #print(sum.shape)
@@ -285,10 +297,11 @@ class MFIA(LogObject):
             #hold on
         #    sum[:,z] = transient
 
-        sum = numpy.nanmean(capArray_pF,axis=0)
-        print(sum.shape)
+        #sumArray = numpy.nanmean(capArray,axis=0)
+        #print(sum.shape)
         #averagedTransient = numpy.nanmean(sum)
-        averagedTransient = sum[rejectSamples:numSamples]
+        averagedTransient = numpy.nanmean(capArray,axis=1)
+        print(averagedTransient.shape)
         return averagedTransient
 
         # Transient averaging & plotting
