@@ -285,21 +285,21 @@ class Ui_MainWindow(object):
         self.buttonRow5.addWidget(self.saveLog)
 
         # ROW 6
-        self.buttonClick = QtWidgets.QPushButton()
-        self.buttonClick.setObjectName("buttonClick")
-        self.buttonRow6.addWidget(self.buttonClick)
+        #self.buttonClick = QtWidgets.QPushButton()
+        #self.buttonClick.setObjectName("buttonClick")
+        #self.buttonRow6.addWidget(self.buttonClick)
         
-        self.generateError = QtWidgets.QPushButton()
-        self.generateError.setObjectName("generateError")
-        self.buttonRow6.addWidget(self.generateError)
+        #self.generateError = QtWidgets.QPushButton()
+        #self.generateError.setObjectName("generateError")
+        #self.buttonRow6.addWidget(self.generateError)
         
-        self.generatePlot = QtWidgets.QPushButton()
-        self.generatePlot.setObjectName("generatePlot")
-        self.buttonRow6.addWidget(self.generatePlot)
+        #self.generatePlot = QtWidgets.QPushButton()
+        #self.generatePlot.setObjectName("generatePlot")
+        #self.buttonRow6.addWidget(self.generatePlot)
 
-        self.clearPlot = QtWidgets.QPushButton()
-        self.clearPlot.setObjectName("clearPlot")
-        self.buttonRow6.addWidget(self.clearPlot)
+        #self.clearPlot = QtWidgets.QPushButton()
+        #self.clearPlot.setObjectName("clearPlot")
+        #self.buttonRow6.addWidget(self.clearPlot)
 
         
         ## GRAPH
@@ -307,7 +307,7 @@ class Ui_MainWindow(object):
         self.graphWidget.setObjectName("graphWidget")
         self.topLayout.addWidget(self.graphWidget)
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget.setLabel('left', 'ΔC (pF)', **styles)
+        self.graphWidget.setLabel('left', 'Capacitance (pF)', **styles)
         self.graphWidget.setLabel('bottom', 'Sample Number', **styles)
         
         ## LOG WINDOW
@@ -363,10 +363,10 @@ class Ui_MainWindow(object):
         
         
         # UI SIGNALS->SLOTS
-        self.buttonClick.clicked.connect(self.button_click)
-        self.generateError.clicked.connect(self.generate_error)
-        self.generatePlot.clicked.connect(self.generate_plot)
-        self.clearPlot.clicked.connect(self.clear_plot)
+        #self.buttonClick.clicked.connect(self.button_click)
+        #self.generateError.clicked.connect(self.generate_error)
+        #self.generatePlot.clicked.connect(self.generate_plot)
+        #self.clearPlot.clicked.connect(self.clear_plot)
         self.saveLog.clicked.connect(self.save_log)
         self.buttonInit.clicked.connect(self.state_inited)
         self.buttonStart.clicked.connect(self.state_started)
@@ -382,10 +382,10 @@ class Ui_MainWindow(object):
         self.buttonInit.setText(_translate("MainWindow", "Initialize Hardware"))
         self.buttonStart.setText(_translate("MainWindow", "Start Scan"))
         self.buttonStop.setText(_translate("MainWindow", "Stop Scan"))
-        self.buttonClick.setText(_translate("MainWindow", "Clicky Button"))
-        self.generateError.setText(_translate("MainWindow", "Generate Error"))
-        self.generatePlot.setText(_translate("MainWindow", "Generate Plot"))
-        self.clearPlot.setText(_translate("MainWindow", "Clear Plot"))
+        #self.buttonClick.setText(_translate("MainWindow", "Clicky Button"))
+        #self.generateError.setText(_translate("MainWindow", "Generate Error"))
+        #self.generatePlot.setText(_translate("MainWindow", "Generate Plot"))
+        #self.clearPlot.setText(_translate("MainWindow", "Clear Plot"))
         self.saveLog.setText(_translate("MainWindow", "Save Log"))
 
 
@@ -399,29 +399,29 @@ class Ui_MainWindow(object):
         logText = timeText + "<font color=\"" + color + "\">" + string + "</font>"
         self.logWindow.appendHtml(logText)
 
-    def button_click(self):
-        self.generate_log("Button clicked!")
+    #def button_click(self):
+    #    self.generate_log("Button clicked!")
                 
-    def generate_error(self):
-        self.generate_log("Error: Fake error","red")
+   # def generate_error(self):
+    #    self.generate_log("Error: Fake error","red")
         
-    def generate_plot(self):
-        nPlots = 100
-        nSamples = 500
-        curves = []
-        data = np.random.normal(size=(nPlots*23,nSamples))
-        for idx in range(nPlots):
-            curve = pg.PlotCurveItem(pen=(170-idx,nPlots*4))  #7->17 out of 40
-            self.graphWidget.addItem(curve)
-            #curve.setPos(0,idx*6)
-            curves.append(curve)
-            curves[idx].setData(data[(idx)%data.shape[0]])
+    #def generate_plot(self):
+    #    nPlots = 100
+    #    nSamples = 500
+    #    curves = []
+    #    data = np.random.normal(size=(nPlots*23,nSamples))
+    #    for idx in range(nPlots):
+    #        curve = pg.PlotCurveItem(pen=(170-idx,nPlots*4))  #7->17 out of 40
+    #        self.graphWidget.addItem(curve)
+    #        #curve.setPos(0,idx*6)
+    #        curves.append(curve)
+    #        curves[idx].setData(data[(idx)%data.shape[0]])
             
-        self.generate_log("Data plotted")
+    #    self.generate_log("Data plotted")
         
-    def clear_plot(self):
-        self.graphWidget.clear()
-        self.generate_log("Plot data deleted")
+    #def clear_plot(self):
+    #    self.graphWidget.clear()
+    #    self.generate_log("Plot data deleted")
         
     def save_log(self):
         self.generate_log("Saving Log...","blue")

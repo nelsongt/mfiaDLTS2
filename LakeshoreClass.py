@@ -52,8 +52,9 @@ class Lakeshore(LogObject):
             return False
 
         # Make sure device is a lakeshore
-        idnCheck = 'LSCI,MODEL330,0,032301';
-        if idn == idnCheck:
+        idnCheck = 'LSCI,MODEL33';
+        cut = len(idnCheck)
+        if idn[0:cut] == idnCheck:
             return True
         else:
             return False
