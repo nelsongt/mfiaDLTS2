@@ -28,6 +28,7 @@ class AcquireData(LogObject):
         self.sample = []
         self.dlts = []
         self.temp = []
+        self.lake = []
         self.mfia = []
 
         ## CREATE HARDWARE INSTANCES
@@ -37,11 +38,12 @@ class AcquireData(LogObject):
         ## CREATE FILE SAVE SUBWORKER
         self.file = FileSave()
 
-    def reset(self,sampleParam,dltsParam,tempParam,mfiaParam):
+    def reset(self,sampleParam,dltsParam,tempParam,lakeshoreParam,mfiaParam):
         ## SYNC PARAM STRUCTS FROM UI
         self.sample = sampleParam
         self.dlts = dltsParam
         self.temp = tempParam
+        self.lake = lakeshoreParam
         self.mfia = mfiaParam
 
         self.cap_data = numpy.array([])
@@ -53,7 +55,7 @@ class AcquireData(LogObject):
         #self.graph_update.emit()
 
         ## INITIALIZE HARDWARE
-        if self.lakeshore.reset() == False: # Now initialize Lakeshore
+        if self.lakeshore.reset(self.lake) == False: # Now initialize Lakeshore
             self.init_fail.emit()
             return
         self.device.reset(self.dlts,self.mfia) # Now initialize MFIA

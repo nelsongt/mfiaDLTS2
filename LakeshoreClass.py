@@ -1,4 +1,4 @@
-# Copyright George Nelson 2020
+# Copyright George Nelson 2021
 # Lakeshore class, generates instances of Lakeshore virtual interface
 
 import time
@@ -17,10 +17,18 @@ class Lakeshore(LogObject):
 
         # Stopped state for when user clicks stop
         self.stopped = []
+        
+        self.sample_sensor = ''
+        self.control_sensor = ''
+        self.heater_range = ''
 
-    def reset(self):
+    def reset(self,lake):
         self.generate_log("Initializing Lakeshore...","blue")
         self.stopped = False
+
+        self.sample_sensor = lake.sample
+        self.control_sensor = lake.control
+        self.heater_range = lake.heatpower
 
         # Check for lakeshore 331
         try:
@@ -52,23 +60,25 @@ class Lakeshore(LogObject):
             return False
 
         # Make sure device is a lakeshore
-        idnCheck = 'LSCI,MODEL33';
+        idnCheck330 = 'LSCI,MODEL330';
         cut = len(idnCheck)
-        if idn[0:cut] == idnCheck:
+        if idn[0:cut] == idnCheck330:
             return True
         else:
             return False
 
-    def isLakeshoreConfigured(self):
+    def isLakeshoreConfigured(self,lake):
+        config_string = self.control_sensor + ',1,0,2'    # Control sensor A or B, in Kelvin (1), default heater off (0), heater units power (2)
         response = self.lakeshoreQuery('CSET?')
-        if response != 'B,1,0,2':
-            self.obj1.write('CSET 1,B,1,0,2') # Control loop 1, sensor B, in Kelvin (1), default heater off (0), heater units power (2)
+        if response != config_string:
+            self.obj1.write('CSET 1,' + config_string)       # Control loop 1, then config string above
         elif response == '-1':
             return False
 
+        range_string = self.heater_range
         response = self.lakeshoreQuery('RANGE?')
-        if response != '3':
-            self.obj1.write('RANGE 3') # Set heater to high (3), medium (2), low (1)
+        if response != lake.heatpower:
+            self.obj1.write('RANGE ' + lake.heatpower) # Set heater to high (3), medium (2), low (1)
         elif response == '-1':
             return False
 
@@ -91,11 +101,18 @@ class Lakeshore(LogObject):
 
     def sampleSpaceTemperature(self):
         # Get the temperature
-        try:
-            temp = self.obj1.temperature_B
-            return temp
-        except:
-            self.lakeshore_disconnect.emit()
+        if self.sample_sensor == 'A':
+            try:
+                temp = self.obj1.temperature_A
+                return temp
+            except:
+                self.lakeshore_disconnect.emit()
+        elif self.sample_sensor == 'B':
+            try:
+                temp = self.obj1.temperature_B
+                return temp
+            except:
+                self.lakeshore_disconnect.emit()
 
 
     def SET_TEMP(self,setPoint,tempStable,timeStable):

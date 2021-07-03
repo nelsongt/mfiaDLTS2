@@ -1,4 +1,4 @@
-# Copyright George Nelson 2020
+# Copyright George Nelson 2021
 # Main file
 
 import sys
@@ -10,7 +10,7 @@ import numpy as np
 from MainWindow import Ui_MainWindow
 from GraphClass import MultiLine
 from WorkerClass import AcquireData
-from ParamsClass import SampleParams,DLTSParams,TempParams,MFIAParams
+from ParamsClass import SampleParams,DLTSParams,TempParams,LakeshoreParams,MFIAParams
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -24,6 +24,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sample = SampleParams()
         self.dlts = DLTSParams()
         self.temp = TempParams()
+        self.lake = LakeshoreParams()
         self.mfia = MFIAParams()
 
         ## CREATE PRIMARY WORKER THREAD
@@ -76,6 +77,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.temp.temp_idle = self.tempIdle.value()
         self.temp.temp_stability = self.tempStable.value()
         self.temp.time_stability = self.timeStable.value()
+        
+        # Set Lakeshore parameters
+        if self.radioSampleA.isChecked() == True:
+            self.lake.sample = 'A'
+        elif self.radioSampleB.isChecked() == True:
+            self.lake.sample = 'B'
+        if self.radioControlA.isChecked() == True:
+            self.lake.control = 'A'
+        elif self.radioControlB.isChecked() == True:
+            self.lake.control = 'B'
+        if self.radioHeaterLow.isChecked() == True:
+            self.lake.heatpower = '1'
+        elif self.radioHeaterMed.isChecked() == True:
+            self.lake.heatpower = '2'
+        elif self.radioHeaterHi.isChecked() == True:
+            self.lake.heatpower = '3'            
 
         # Set MFIA Parameters
         self.mfia.sample_rate = self.mfiaSample.value()
@@ -85,7 +102,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
         ## INITIALIZE WORKER
-        self.data.reset(self.sample,self.dlts,self.temp,self.mfia)
+        self.data.reset(self.sample,self.dlts,self.temp,self.lake,self.mfia)
 
     def graph_data(self):
         #nPlots = 100

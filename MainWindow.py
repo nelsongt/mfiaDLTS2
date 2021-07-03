@@ -1,4 +1,4 @@
-# Copyright George Nelson 2020
+# Copyright George Nelson 2021
 # UI Class, UI-related code goes here
 
 from PyQt5 import QtCore, QtWidgets
@@ -176,6 +176,71 @@ class Ui_MainWindow(object):
         self.buttonIdle = QtWidgets.QPushButton()
         self.buttonIdle.setObjectName("buttonIdle")
         self.tempLayout.addWidget(self.buttonIdle,3,2,1,2)
+    
+        self.radioSampleLayout = QtWidgets.QHBoxLayout()
+        self.radioSampleLayout.setObjectName("radioSampleLayout")
+        self.tempLayout.addLayout(self.radioSampleLayout,4,0,1,1)
+        
+        self.radioSampleLabel = QtWidgets.QLabel('Sample\nSensor:')
+        self.radioSampleLabel.setObjectName("radioSampleLabel")
+        self.radioSampleLayout.addWidget(self.radioSampleLabel)
+    
+        self.radioSampleA = QtWidgets.QRadioButton('A')
+        self.radioSampleA.setObjectName("radioSampleA")
+        self.radioSampleLayout.addWidget(self.radioSampleA)
+        
+        self.radioSampleB = QtWidgets.QRadioButton('B')
+        self.radioSampleB.setObjectName("radioSampleB")
+        self.radioSampleLayout.addWidget(self.radioSampleB)
+        
+        self.radioSampleGroup = QtWidgets.QButtonGroup()
+        self.radioSampleGroup.addButton(self.radioSampleA)
+        self.radioSampleGroup.addButton(self.radioSampleB)
+        
+        self.radioControlLayout = QtWidgets.QHBoxLayout()
+        self.radioControlLayout.setObjectName("radioControlLayout")
+        self.tempLayout.addLayout(self.radioControlLayout,4,1,1,1)
+        
+        self.radioControlLabel = QtWidgets.QLabel('Control\nSensor:')
+        self.radioControlLabel.setObjectName("radioControlLabel")
+        self.radioControlLayout.addWidget(self.radioControlLabel)
+        
+        self.radioControlA = QtWidgets.QRadioButton('A')
+        self.radioControlA.setObjectName("radioControlA")
+        self.radioControlLayout.addWidget(self.radioControlA)
+        
+        self.radioControlB = QtWidgets.QRadioButton('B')
+        self.radioControlB.setObjectName("radioControlB")
+        self.radioControlLayout.addWidget(self.radioControlB)
+        
+        self.radioControlGroup = QtWidgets.QButtonGroup()
+        self.radioControlGroup.addButton(self.radioControlA)
+        self.radioControlGroup.addButton(self.radioControlB)
+        
+        self.radioHeaterLayout = QtWidgets.QHBoxLayout()
+        self.radioHeaterLayout.setObjectName("radioHeaterLayout")
+        self.tempLayout.addLayout(self.radioHeaterLayout,4,2,1,2)
+        
+        self.radioHeaterLabel = QtWidgets.QLabel('Heater Range:')
+        self.radioHeaterLabel.setObjectName("radioControlLabel")
+        self.radioHeaterLayout.addWidget(self.radioHeaterLabel)
+        
+        self.radioHeaterLow = QtWidgets.QRadioButton('Low')
+        self.radioHeaterLow.setObjectName("radioHeaterLow")
+        self.radioHeaterLayout.addWidget(self.radioHeaterLow)
+        
+        self.radioHeaterMed = QtWidgets.QRadioButton('Med')
+        self.radioHeaterMed.setObjectName("radioHeaterMed")
+        self.radioHeaterLayout.addWidget(self.radioHeaterMed)
+        
+        self.radioHeaterHi = QtWidgets.QRadioButton('Hi')
+        self.radioHeaterHi.setObjectName("radioHeaterHi")
+        self.radioHeaterLayout.addWidget(self.radioHeaterHi)
+        
+        self.radioHeaterGroup = QtWidgets.QButtonGroup()
+        self.radioHeaterGroup.addButton(self.radioHeaterLow)
+        self.radioHeaterGroup.addButton(self.radioHeaterMed)
+        self.radioHeaterGroup.addButton(self.radioHeaterHi)
         
         # ROW 3 DLTS
         self.dltsBox = QtWidgets.QGroupBox('DLTS Parameters')
@@ -343,6 +408,9 @@ class Ui_MainWindow(object):
         self.tempStable.setValue(0.1)
         self.timeStable.setRange(0,1000)
         self.timeStable.setValue(5)
+        self.radioSampleB.setChecked(1)
+        self.radioControlB.setChecked(1)
+        self.radioHeaterHi.setChecked(1)
         self.dltsBias.setRange(-10,10)
         self.dltsBias.setValue(-2.0)
         self.dltsPulse.setRange(-10,10)
