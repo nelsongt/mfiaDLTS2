@@ -13,12 +13,15 @@ class MFIA(LogObject):
     def __init__(self):
         super(MFIA, self).__init__()
         self.ziDAQ = []
-        self.rejectSamples = 4
+        self.rejectSamples = []
 
     def reset(self,dlts,mfia):
         self.generate_log("Initializing MFIA...","blue")
         self.ziDAQ = []
-        self.rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
+        
+        calcRejectSamples = math.floor(16*mfia.time_constant*mfia.sample_rate) #calculation of hardware recovery, derived from the MFIA user manual sect. 6.4.2 for 99% recovery using 8th order filter
+        extraRejectSamples = 0 #if empirically it is seen that more data points should be rejected beyond the above calculation, add the extra # of points here
+        self.rejectSamples = calcRejectSamples + extraRejectSamples #length of hardware recovery in data points
 
         ## Open connection to the ziServer (socket for sync interface)
         self.ziDAQ = ziPython.ziDAQServer('127.0.0.1',8004,6)  # Use local data server for best performance
@@ -159,7 +162,7 @@ class MFIA(LogObject):
             self.generate_log("Found MFIA {0} ...".format(deviceId))
             return deviceId
 
-    def MFIA_CAPACITANCE_DAQ(self,dlts,mfia):
+    def MFIA_CAPACITANCE_DAQ(self,dlts):
         deviceId = self.device #TODO
 
         # if ~exist('deviceId', 'var')
@@ -278,12 +281,12 @@ class MFIA(LogObject):
         return reshapedCap*1e12
 
 
-    def MFIA_TRANSIENT_AVERAGER_DAQ(self,capArray,mfia):
+    def MFIA_TRANSIENT_AVERAGER_DAQ(self,capArray):
         #SR = mfia.sample_rate
         #capArray_pF = capArray*1e12
         #transients = capArray.shape[0]
         #numSamples = capArray.shape[1]  #length of transient in data points
-        #rejectSamples = 4 #Length of hardware recovery in data points, generally first 80-100 usec of data if using George's suggested MFIA settings
+
         #realNumSamp = numSamples - rejectSamples
         #times = numpy.linspace(1/SR,(1/SR)*realNumSamp,realNumSamp)
 
