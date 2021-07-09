@@ -16,13 +16,13 @@ class TempParams(object):
     __slots__ = ['temp_init', 'temp_step', 'temp_final', 'temp_idle', 'temp_stability', 'time_stability']
 
     #def __init__(self):
-    
+
 class LakeshoreParams(object):
     __slots__ = ['control', 'sample', 'heatpower']
 
     #def __init__(self):
 
 class MFIAParams(object):
-    __slots__ = ['sample_rate', 'ac_freq', 'ac_ampl', 'time_constant']
+    __slots__ = ['sample_rate', 'ac_freq', 'ac_ampl', 'time_constant', 'i_range', 'reject_samples']
 
     #def __init__(self):

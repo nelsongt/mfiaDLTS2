@@ -81,11 +81,11 @@ class Ui_MainWindow(object):
         
         self.sampleUser = QtWidgets.QLineEdit()
         self.sampleUser.setObjectName("sampleUser")
-        self.sampleLayout.addWidget(self.sampleUser,1,0)
+        self.sampleLayout.addWidget(self.sampleUser,0,1)
 
         self.sampleNameLabel = QtWidgets.QLabel('Sample Name:')
         self.sampleNameLabel.setObjectName("sampleNameLabel")
-        self.sampleLayout.addWidget(self.sampleNameLabel,0,1)
+        self.sampleLayout.addWidget(self.sampleNameLabel,1,0)
 
         self.sampleName = QtWidgets.QLineEdit()
         self.sampleName.setObjectName("sampleName")
@@ -97,11 +97,11 @@ class Ui_MainWindow(object):
         
         self.sampleMat = QtWidgets.QLineEdit()
         self.sampleMat.setObjectName("sampleMat")
-        self.sampleLayout.addWidget(self.sampleMat,1,2)
+        self.sampleLayout.addWidget(self.sampleMat,0,3)
 
         self.sampleAreaLabel = QtWidgets.QLabel('Sample Area (mm<sup>2</sup>):')
         self.sampleAreaLabel.setObjectName("sampleAreaLabel")
-        self.sampleLayout.addWidget(self.sampleAreaLabel,0,3)
+        self.sampleLayout.addWidget(self.sampleAreaLabel,1,2)
         
         self.sampleArea = ScientificDoubleSpinBox()
         self.sampleArea.setObjectName("sampleArea")
@@ -109,11 +109,11 @@ class Ui_MainWindow(object):
         
         self.sampleCommentLabel = QtWidgets.QLabel('Sample Comment:')
         self.sampleCommentLabel.setObjectName("sampleCommentLabel")
-        self.sampleLayout.addWidget(self.sampleCommentLabel,2,0,1,4)
+        self.sampleLayout.addWidget(self.sampleCommentLabel,2,0)
         
         self.sampleComment = QtWidgets.QLineEdit()
         self.sampleComment.setObjectName("sampleComment")
-        self.sampleLayout.addWidget(self.sampleComment,3,0,1,4)
+        self.sampleLayout.addWidget(self.sampleComment,2,1,1,3)
         
         # ROW 2 TEMPERATURE
         self.tempBox = QtWidgets.QGroupBox('Temperature Parameters')
@@ -131,11 +131,11 @@ class Ui_MainWindow(object):
         
         self.tempStart = ScientificDoubleSpinBox()
         self.tempStart.setObjectName("tempStart")
-        self.tempLayout.addWidget(self.tempStart,1,0)
+        self.tempLayout.addWidget(self.tempStart,0,1)
 
         self.tempEndLabel = QtWidgets.QLabel('Final Temperature (K):')
         self.tempEndLabel.setObjectName("tempEndLabel")
-        self.tempLayout.addWidget(self.tempEndLabel,0,1)
+        self.tempLayout.addWidget(self.tempEndLabel,1,0)
 
         self.tempEnd = ScientificDoubleSpinBox()
         self.tempEnd.setObjectName("tempEnd")
@@ -143,47 +143,47 @@ class Ui_MainWindow(object):
 
         self.tempStepLabel = QtWidgets.QLabel('Temperature Step (K):')
         self.tempStepLabel.setObjectName("tempStepLabel")
-        self.tempLayout.addWidget(self.tempStepLabel,0,2)
+        self.tempLayout.addWidget(self.tempStepLabel,2,0)
         
         self.tempStep = ScientificDoubleSpinBox()
         self.tempStep.setObjectName("tempStep")
-        self.tempLayout.addWidget(self.tempStep,1,2)
+        self.tempLayout.addWidget(self.tempStep,2,1)
 
         self.tempIdleLabel = QtWidgets.QLabel('Idle Temperature (K):')
         self.tempIdleLabel.setObjectName("tempIdleLabel")
-        self.tempLayout.addWidget(self.tempIdleLabel,0,3)
+        self.tempLayout.addWidget(self.tempIdleLabel,3,0)
         
         self.tempIdle = ScientificDoubleSpinBox()
         self.tempIdle.setObjectName("tempIdle")
-        self.tempLayout.addWidget(self.tempIdle,1,3)
+        self.tempLayout.addWidget(self.tempIdle,3,1)
         
         self.tempStableLabel = QtWidgets.QLabel('Temp. Stability (K):')
         self.tempStableLabel.setObjectName("tempStableLabel")
-        self.tempLayout.addWidget(self.tempStableLabel,2,0)
+        self.tempLayout.addWidget(self.tempStableLabel,0,2)
         
         self.tempStable = ScientificDoubleSpinBox()
         self.tempStable.setObjectName("tempStable")
-        self.tempLayout.addWidget(self.tempStable,3,0)
+        self.tempLayout.addWidget(self.tempStable,0,3)
         
         self.timeStableLabel = QtWidgets.QLabel('Time Stability (s):')
         self.timeStableLabel.setObjectName("timeStableLabel")
-        self.tempLayout.addWidget(self.timeStableLabel,2,1)
+        self.tempLayout.addWidget(self.timeStableLabel,1,2)
         
         self.timeStable = QtWidgets.QSpinBox()
         self.timeStable.setObjectName("timeStable")
-        self.tempLayout.addWidget(self.timeStable,3,1)
+        self.tempLayout.addWidget(self.timeStable,1,3)
         
         self.buttonIdle = QtWidgets.QPushButton()
         self.buttonIdle.setObjectName("buttonIdle")
-        self.tempLayout.addWidget(self.buttonIdle,3,2,1,2)
+        self.tempLayout.addWidget(self.buttonIdle,4,0,1,2)
     
         self.radioSampleLayout = QtWidgets.QHBoxLayout()
         self.radioSampleLayout.setObjectName("radioSampleLayout")
-        self.tempLayout.addLayout(self.radioSampleLayout,4,0,1,1)
+        self.tempLayout.addLayout(self.radioSampleLayout,2,3,1,1)
         
-        self.radioSampleLabel = QtWidgets.QLabel('Sample\nSensor:')
+        self.radioSampleLabel = QtWidgets.QLabel('Sample Sensor:')
         self.radioSampleLabel.setObjectName("radioSampleLabel")
-        self.radioSampleLayout.addWidget(self.radioSampleLabel)
+        self.tempLayout.addWidget(self.radioSampleLabel,2,2)
     
         self.radioSampleA = QtWidgets.QRadioButton('A')
         self.radioSampleA.setObjectName("radioSampleA")
@@ -199,11 +199,11 @@ class Ui_MainWindow(object):
         
         self.radioControlLayout = QtWidgets.QHBoxLayout()
         self.radioControlLayout.setObjectName("radioControlLayout")
-        self.tempLayout.addLayout(self.radioControlLayout,4,1,1,1)
+        self.tempLayout.addLayout(self.radioControlLayout,3,3,1,1)
         
-        self.radioControlLabel = QtWidgets.QLabel('Control\nSensor:')
+        self.radioControlLabel = QtWidgets.QLabel('Control Sensor:')
         self.radioControlLabel.setObjectName("radioControlLabel")
-        self.radioControlLayout.addWidget(self.radioControlLabel)
+        self.tempLayout.addWidget(self.radioControlLabel,3,2)
         
         self.radioControlA = QtWidgets.QRadioButton('A')
         self.radioControlA.setObjectName("radioControlA")
@@ -221,7 +221,7 @@ class Ui_MainWindow(object):
         self.radioHeaterLayout.setObjectName("radioHeaterLayout")
         self.tempLayout.addLayout(self.radioHeaterLayout,4,2,1,2)
         
-        self.radioHeaterLabel = QtWidgets.QLabel('Heater Range:')
+        self.radioHeaterLabel = QtWidgets.QLabel('Heater Range:\t')
         self.radioHeaterLabel.setObjectName("radioControlLabel")
         self.radioHeaterLayout.addWidget(self.radioHeaterLabel)
         
@@ -257,11 +257,11 @@ class Ui_MainWindow(object):
         
         self.dltsBias = ScientificDoubleSpinBox()
         self.dltsBias.setObjectName("dltsBias")
-        self.dltsLayout.addWidget(self.dltsBias,1,0)
+        self.dltsLayout.addWidget(self.dltsBias,0,1)
 
         self.dltsPulseLabel = QtWidgets.QLabel('Pulse Height (V):')
         self.dltsPulseLabel.setObjectName("dltsPulseLabel")
-        self.dltsLayout.addWidget(self.dltsPulseLabel,0,1)
+        self.dltsLayout.addWidget(self.dltsPulseLabel,1,0)
 
         self.dltsPulse = ScientificDoubleSpinBox()
         self.dltsPulse.setObjectName("dltsPulse")
@@ -269,27 +269,27 @@ class Ui_MainWindow(object):
 
         self.dltsPWidthLabel = QtWidgets.QLabel('Pulse Width (s):')
         self.dltsPWidthLabel.setObjectName("dltsPWidthLabel")
-        self.dltsLayout.addWidget(self.dltsPWidthLabel,0,2)
+        self.dltsLayout.addWidget(self.dltsPWidthLabel,2,0)
         
         self.dltsPWidth = ScientificDoubleSpinBox()
         self.dltsPWidth.setObjectName("dltsPWidth")
-        self.dltsLayout.addWidget(self.dltsPWidth,1,2)
+        self.dltsLayout.addWidget(self.dltsPWidth,2,1)
 
         self.dltsTWidthLabel = QtWidgets.QLabel('Transient Width (s):')
         self.dltsTWidthLabel.setObjectName("dltsTWidthLabel")
-        self.dltsLayout.addWidget(self.dltsTWidthLabel,0,3)
+        self.dltsLayout.addWidget(self.dltsTWidthLabel,0,2)
         
         self.dltsTWidth = ScientificDoubleSpinBox()
         self.dltsTWidth.setObjectName("dltsTWidth")
-        self.dltsLayout.addWidget(self.dltsTWidth,1,3)
+        self.dltsLayout.addWidget(self.dltsTWidth,0,3)
         
         self.dltsSampleLabel = QtWidgets.QLabel('Sampling Time (s):')
         self.dltsSampleLabel.setObjectName("dltsSampleLabel")
-        self.dltsLayout.addWidget(self.dltsSampleLabel,2,2)
+        self.dltsLayout.addWidget(self.dltsSampleLabel,1,2)
         
         self.dltsSample = QtWidgets.QSpinBox()
         self.dltsSample.setObjectName("dltsSample")
-        self.dltsLayout.addWidget(self.dltsSample,2,3)
+        self.dltsLayout.addWidget(self.dltsSample,1,3)
         
         # ROW 4 MFIA
         self.mfiaBox = QtWidgets.QGroupBox('MFIA Parameters')
@@ -306,11 +306,11 @@ class Ui_MainWindow(object):
         
         self.mfiaSample = QtWidgets.QSpinBox()
         self.mfiaSample.setObjectName("mfiaSample")
-        self.mfiaLayout.addWidget(self.mfiaSample,1,0)
+        self.mfiaLayout.addWidget(self.mfiaSample,0,1)
 
         self.mfiaFreqLabel = QtWidgets.QLabel('AC Frequency (Hz):')
         self.mfiaFreqLabel.setObjectName("mfiaFreqLabel")
-        self.mfiaLayout.addWidget(self.mfiaFreqLabel,0,1)
+        self.mfiaLayout.addWidget(self.mfiaFreqLabel,1,0)
 
         self.mfiaFreq = QtWidgets.QSpinBox()
         self.mfiaFreq.setObjectName("mfiaFreq")
@@ -322,15 +322,31 @@ class Ui_MainWindow(object):
         
         self.mfiaAmp = ScientificDoubleSpinBox()
         self.mfiaAmp.setObjectName("mfiaAmp")
-        self.mfiaLayout.addWidget(self.mfiaAmp,1,2)
+        self.mfiaLayout.addWidget(self.mfiaAmp,0,3)
 
         self.mfiaTCLabel = QtWidgets.QLabel('Time Constant (s):')
         self.mfiaTCLabel.setObjectName("mfiaTCLabel")
-        self.mfiaLayout.addWidget(self.mfiaTCLabel,0,3)
+        self.mfiaLayout.addWidget(self.mfiaTCLabel,1,2)
         
         self.mfiaTC = ScientificDoubleSpinBox()
         self.mfiaTC.setObjectName("mfiaTC")
         self.mfiaLayout.addWidget(self.mfiaTC,1,3)
+        
+        self.mfiaRangeLabel = QtWidgets.QLabel('Current Range (A):')
+        self.mfiaRangeLabel.setObjectName("mfiaRangeLabel")
+        self.mfiaLayout.addWidget(self.mfiaRangeLabel,2,0)
+        
+        self.mfiaRange = ScientificDoubleSpinBox()
+        self.mfiaRange.setObjectName("mfiaRange")
+        self.mfiaLayout.addWidget(self.mfiaRange,2,1)
+        
+        self.mfiaRejectLabel = QtWidgets.QLabel('Recovery Samples:')
+        self.mfiaRejectLabel.setObjectName("mfiaRejectLabel")
+        self.mfiaLayout.addWidget(self.mfiaRejectLabel,2,2)
+        
+        self.mfiaReject = QtWidgets.QSpinBox()
+        self.mfiaReject.setObjectName("mfiaReject")
+        self.mfiaLayout.addWidget(self.mfiaReject,2,3)
 
         # Row 5
         self.buttonInit = QtWidgets.QPushButton()
@@ -445,7 +461,7 @@ class Ui_MainWindow(object):
 
     def retranslate_ui(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "mfiaDLTS 2.0"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "mfiaDLTS2 Acquire"))
         self.buttonIdle.setText(_translate("MainWindow", "Go To Idle Temperature Now"))
         self.buttonInit.setText(_translate("MainWindow", "Initialize Hardware"))
         self.buttonStart.setText(_translate("MainWindow", "Start Scan"))

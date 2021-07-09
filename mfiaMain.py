@@ -77,7 +77,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.temp.temp_idle = self.tempIdle.value()
         self.temp.temp_stability = self.tempStable.value()
         self.temp.time_stability = self.timeStable.value()
-        
+
         # Set Lakeshore parameters
         if self.radioSampleA.isChecked() == True:
             self.lake.sample = 'A'
@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.radioHeaterMed.isChecked() == True:
             self.lake.heatpower = '2'
         elif self.radioHeaterHi.isChecked() == True:
-            self.lake.heatpower = '3'            
+            self.lake.heatpower = '3'
 
         # Set MFIA Parameters
         self.mfia.sample_rate = self.mfiaSample.value()
