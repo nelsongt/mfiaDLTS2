@@ -18,9 +18,9 @@ class MFIA(LogObject):
     def reset(self,dlts,mfia):
         self.generate_log("Initializing MFIA...","blue")
         self.ziDAQ = []
-        
+
         calcRejectSamples = math.floor(16*mfia.time_constant*mfia.sample_rate) #calculation of hardware recovery, derived from the MFIA user manual sect. 6.4.2 for 99% recovery using 8th order filter
-        extraRejectSamples = 0 #if empirically it is seen that more data points should be rejected beyond the above calculation, add the extra # of points here
+        extraRejectSamples = mfia.sample_reject #if empirically it is seen that more data points should be rejected beyond the above calculation, add the extra # of points here
         self.rejectSamples = calcRejectSamples + extraRejectSamples #length of hardware recovery in data points
 
         ## Open connection to the ziServer (socket for sync interface)
@@ -35,10 +35,10 @@ class MFIA(LogObject):
         # Enable IA module
         self.ziDAQ.setInt("/{0}/imps/0/enable".format(device), 1)
     #     ziDAQ('setInt', ['/' device '/imps/0/enable'], 1);
-    #
-    #
+
+
         vrange = 10;
-        irange = 0.0001;
+        irange = mfia.i_range;
         phase_offset = 0;
 
         # Setup IA module
@@ -56,6 +56,7 @@ class MFIA(LogObject):
     #     ziDAQ('setInt', ['/' device '/system/impedance/precision'], 0);
     #     ziDAQ('setDouble', ['/' device '/imps/0/maxbandwidth'], 1000);
     #     ziDAQ('setDouble', ['/' device '/imps/0/omegasuppression'], 60);
+        self.ziDAQ.setDouble("/{0}/imps/0/confidence/lowdut2t/ratio".format(device), 1000);
     #
         # Input settings, set to current and set range
         self.ziDAQ.setInt("/{0}/imps/0/auto/inputrange".format(device), 0)

@@ -332,15 +332,15 @@ class Ui_MainWindow(object):
         self.mfiaTC.setObjectName("mfiaTC")
         self.mfiaLayout.addWidget(self.mfiaTC,1,3)
         
-        self.mfiaRangeLabel = QtWidgets.QLabel('Current Range (A):')
+        self.mfiaRangeLabel = QtWidgets.QLabel('Current Range (mA):')
         self.mfiaRangeLabel.setObjectName("mfiaRangeLabel")
         self.mfiaLayout.addWidget(self.mfiaRangeLabel,2,0)
         
-        self.mfiaRange = ScientificDoubleSpinBox()
+        self.mfiaRange = QtWidgets.QComboBox()
         self.mfiaRange.setObjectName("mfiaRange")
         self.mfiaLayout.addWidget(self.mfiaRange,2,1)
         
-        self.mfiaRejectLabel = QtWidgets.QLabel('Recovery Samples:')
+        self.mfiaRejectLabel = QtWidgets.QLabel('Rejected Samples:')
         self.mfiaRejectLabel.setObjectName("mfiaRejectLabel")
         self.mfiaLayout.addWidget(self.mfiaRejectLabel,2,2)
         
@@ -442,6 +442,9 @@ class Ui_MainWindow(object):
         self.mfiaTC.setValue(2.4e-6)
         self.mfiaSample.setGroupSeparatorShown(1)
         self.mfiaFreq.setGroupSeparatorShown(1)
+        self.mfiaRange.addItems(["10", "1", "0.1", "0.01"])
+        self.mfiaRange.setCurrentIndex(2)
+        self.mfiaReject.setValue(1)        
         self.graphWidget.setBackground('w')
         self.state_pre()
         

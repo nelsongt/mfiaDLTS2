@@ -39,6 +39,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonInit.clicked.connect(self.initialize_hardware)
         self.buttonStart.clicked.connect(self.commence_scan)
         self.buttonStop.clicked.connect(self.stopping_scan)
+        self.buttonIdle.clicked.connect(self.goto_idle)
         self.data.init_fail.connect(self.scan_complete)
         self.data.init_fail.connect(self.state_stopped)
         self.data.lakeshore.lakeshore_disconnect.connect(self.stopping_scan)
@@ -99,6 +100,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mfia.ac_freq = self.mfiaFreq.value()
         self.mfia.ac_ampl = self.mfiaAmp.value()
         self.mfia.time_constant = self.mfiaTC.value()
+        self.mfia.i_range = float(self.mfiaRange.currentText())*0.001 # conversion from mA to A
+        self.mfia.sample_reject = self.mfiaReject.value()
 
 
         ## INITIALIZE WORKER
@@ -155,6 +158,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.first_plot = True
         self.curves = []
         self.generate_log("All done.","green")
+
+    def goto_idle(self):
+        self.generate_log("Setpoint set to idle temperature, {:3.2f} K.".format(self.tempIdle.value()),"blue")
+        self.data.lakeshore.sampleSetPoint(self.tempIdle.value())
+
 
 
 

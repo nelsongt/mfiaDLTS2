@@ -23,6 +23,6 @@ class LakeshoreParams(object):
     #def __init__(self):
 
 class MFIAParams(object):
-    __slots__ = ['sample_rate', 'ac_freq', 'ac_ampl', 'time_constant', 'i_range', 'reject_samples']
+    __slots__ = ['sample_rate', 'ac_freq', 'ac_ampl', 'time_constant', 'i_range', 'sample_reject']
 
     #def __init__(self):
