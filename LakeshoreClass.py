@@ -17,7 +17,7 @@ class Lakeshore(LogObject):
 
         # Stopped state for when user clicks stop
         self.stopped = []
-        
+
         self.sample_sensor = ''
         self.control_sensor = ''
         self.heater_range = ''
@@ -61,13 +61,13 @@ class Lakeshore(LogObject):
 
         # Make sure device is a lakeshore
         idnCheck330 = 'LSCI,MODEL330';
-        cut = len(idnCheck)
+        cut = len(idnCheck330)
         if idn[0:cut] == idnCheck330:
             return True
         else:
             return False
 
-    def isLakeshoreConfigured(self,lake):
+    def isLakeshoreConfigured(self):
         config_string = self.control_sensor + ',1,0,2'    # Control sensor A or B, in Kelvin (1), default heater off (0), heater units power (2)
         response = self.lakeshoreQuery('CSET?')
         if response != config_string:
@@ -75,10 +75,9 @@ class Lakeshore(LogObject):
         elif response == '-1':
             return False
 
-        range_string = self.heater_range
         response = self.lakeshoreQuery('RANGE?')
-        if response != lake.heatpower:
-            self.obj1.write('RANGE ' + lake.heatpower) # Set heater to high (3), medium (2), low (1)
+        if response != self.heater_range:
+            self.obj1.write('RANGE ' + self.heater_range) # Set heater to high (3), medium (2), low (1)
         elif response == '-1':
             return False
 
