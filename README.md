@@ -53,7 +53,7 @@ The zhinst package will not be in the distro repository so install that from pip
     
     pip install zhinst
     
-Then to run mfiaDLTS2 use the command line cd into the mfiaDLTS2 folder and type:
+Then to run mfiaDLTS2 use the command line, cd into the mfiaDLTS2 folder and type:
     
     python mfiaMain.py
     
