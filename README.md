@@ -30,13 +30,12 @@ Install [miniconda](https://docs.conda.io/en/latest/miniconda.html). Open the An
 
     pip install numpy pandas PyQt5 pyqtgraph PyMeasure zhinst
   
-Now from the that prompt type to start mfiaDLTS2:
+Then from Anaconda Prompt type to start mfiaDLTS2:
   
     python <path to mfiaMain.py>
   
 If you want a way to run the program by double clicking a file you have to create a .bat file for this. Using notepad, write this:
-  
-  
+    
     @echo off
     <path to python.exe> <path to mfiaMain.py>
     pause
