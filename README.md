@@ -57,7 +57,7 @@ Then to run mfiaDLTS2 use the command line, cd into the mfiaDLTS2 folder and typ
     
     python mfiaMain.py
     
-You may make an executable bash script to run the script without typing anything.
+You may use double-click the bash script mfiaMain.sh to run the script without typing anything, but you will probably have to chmod+x the script to get it to run the first time.
 
 ### Mac
 
