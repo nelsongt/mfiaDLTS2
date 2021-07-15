@@ -1,8 +1,8 @@
 This is a python port of [mfiaDLTS](https://github.com/nelsongt/mfiaDLTS). Please see the dumentation for mfiaDLTS as it mostly will apply to this project with the obvious exception of MATLAB-specific portions. Currently in early development, at the moment should work ok for acquiring transient data. Transient processing is not yet implemented.
 
 ![image](https://raw.githubusercontent.com/nelsongt/mfiaDLTS2/master/screenshot.png)
-
-
+  
+  
 Hardware Requirements
 ------------
 
@@ -22,15 +22,15 @@ Software Dependencies
 
 LabOne: https://www.zhinst.com/downloads
   
-Python 3.7 or higher
--numpy
--pandas
--PyQt5
--pyqtgraph
--PyMeasure
+Python 3.7 or higher  
+-numpy  
+-pandas  
+-PyQt5  
+-pyqtgraph  
+-PyMeasure  
 -zhinst
-
-
+  
+  
 Installation of mfiaDLTS2
 ------------
 
