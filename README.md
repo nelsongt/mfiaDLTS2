@@ -15,7 +15,19 @@ Hardware Requirements
   -Zurich Instruments MFIA or MFLI with IA module
   
   -PC with python installed to run this code and with GPIB cable and drivers
+  
+Software Dependencies
+------------
 
+LabOne: https://www.zhinst.com/downloads
+  
+Python 3.7 or higher
+-numpy
+-pandas
+-PyQt5
+-pyqtgraph
+-PyMeasure
+-zhinst
 
 Installation of mfiaDLTS2
 ------------
