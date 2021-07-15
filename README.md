@@ -25,6 +25,7 @@ Download the source code and extract it to a folder wherever you want.
 mfiaDLTS2 requires a ditribution of python 3 and several python dependencies. As of this writing python 3.9 was used successfully. There are many ways to do this but I can make recommendation for beginners:
 
 ### Windows
+
 Install [miniconda](https://docs.conda.io/en/latest/miniconda.html). Open the Anaconda Prompt and install dependencies with the following:
 
     pip install numpy pandas PyQt5 pyqtgraph PyMeasure zhinst
@@ -44,6 +45,7 @@ and save that as a file named mfiaDLTS2.bat, you may run the program from this b
   
 
 ### \*Ubuntu
+
 Python and most dependencies can be installed using native package manager. Similar idea will work for Fedora, openSUSE, Arch, etc.
 
     sudo apt install python3 python3-pip python3-numpy python3-pandas python3-pyqt5 python3-pyqtgraph python3-pymeasure
@@ -58,6 +60,7 @@ Then to run mfiaDLTS2 use the command line cd into the mfiaDLTS2 folder and type
     
 
 ### Mac
+
 Sorry, I am unable to help at this time but it will be similar to above.
   
 
