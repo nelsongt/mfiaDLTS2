@@ -31,13 +31,13 @@ Install [miniconda](https://docs.conda.io/en/latest/miniconda.html). Open the An
   
 Now from the that prompt type to start mfiaDLTS2:
   
-    python \<path to mfiaMain.py\>
+    python <path to mfiaMain.py>
   
-If you want a way to run the program by double clicking you have to create a .bat file. Using notepad, write this:
+If you want a way to run the program by double clicking a file you have to create a .bat file for this. Using notepad, write this:
   
   
     @echo off
-    \<path to python.exe\> \<path to mfiaMain.py\>
+    <path to python.exe> <path to mfiaMain.py>
     pause
     
 and save that as a file named mfiaDLTS2.bat, you may run the program from this bat file or even create a shortcut to this bat file on the desktop and run from there.
