@@ -16,6 +16,7 @@ Hardware Requirements
   
   -PC with python installed to run this code and with GPIB cable and drivers
   
+  
 Software Dependencies
 ------------
 
@@ -28,6 +29,7 @@ Python 3.7 or higher
 -pyqtgraph
 -PyMeasure
 -zhinst
+
 
 Installation of mfiaDLTS2
 ------------
