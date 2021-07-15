@@ -24,42 +24,40 @@ Download the source code and extract it to a folder wherever you want.
 
 mfiaDLTS2 requires a ditribution of python 3 and several python dependencies. As of this writing python 3.9 was used successfully. There are many ways to do this but I can make recommendation for beginners:
 
-Windows
---
+### Windows
 Install [miniconda](https://docs.conda.io/en/latest/miniconda.html). Open the Anaconda Prompt and install dependencies with the following:
 
-  pip install numpy pandas PyQt5 pyqtgraph PyMeasure zhinst
+    pip install numpy pandas PyQt5 pyqtgraph PyMeasure zhinst
   
 Now from the that prompt type to start mfiaDLTS2:
   
-  python <path to mfiaMain.py>
+    python \<path to mfiaMain.py\>
   
 If you want a way to run the program by double clicking you have to create a .bat file. Using notepad, write this:
   
-  @echo off
-  <path to python.exe> <path to mfiaMain.py>
-  pause
+  
+    @echo off
+    \<path to python.exe\> \<path to mfiaMain.py\>
+    pause
     
 and save that as a file named mfiaDLTS2.bat, you may run the program from this bat file or even create a shortcut to this bat file on the desktop and run from there.
   
 
-\*Ubuntu
---
+### \*Ubuntu
 Python and most dependencies can be installed using native package manager. Similar idea will work for Fedora, openSUSE, Arch, etc.
 
-  sudo apt install python3 python3-pip python3-numpy python3-pandas python3-pyqt5 python3-pyqtgraph python3-pymeasure
+    sudo apt install python3 python3-pip python3-numpy python3-pandas python3-pyqt5 python3-pyqtgraph python3-pymeasure
     
 The zhinst package will not be in the distro repository so install that from pip:
     
-  pip install zhinst
+    pip install zhinst
     
 Then to run mfiaDLTS2 use the command line cd into the mfiaDLTS2 folder and type:
     
-  python mfiaMain.py
+    python mfiaMain.py
     
 
-Mac
---
+### Mac
 Sorry, I am unable to help at this time but it will be similar to above.
   
 
