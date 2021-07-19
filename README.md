@@ -46,7 +46,7 @@ Install [miniconda](https://docs.conda.io/en/latest/miniconda.html). Open the An
   
 Then from Anaconda Prompt type to start mfiaDLTS2:
   
-    python <path to mfiaMain.py>
+    python "path to mfiaMain.py"
   
 If you want a way to run the program by double clicking a file you have to edit the mfiaMain.bat file for this. Right click on mfiaMain.bat and hit edit. You will need to replace the path placeholders with the actual paths, eg. "Path where your Python exe is stored\python.exe" will become "C:\Users\myUser\AppData\Local\Programs\Python\Python39\python.exe" but of course you will replace myUser with whatever your windows username is. After you are done, save the file. You may now run the program by double clicking this bat file or even create a shortcut to this bat file on the desktop and run from there.
   
