@@ -69,7 +69,7 @@ You may use double-click the bash script mfiaMain.sh to run the script without t
 
 ### Mac
 
-Sorry, I am unable to help at this time but it will be similar to above.
+I am unable to help at this time but it will be similar to above. Instructions can be submitted through the issues or by email.
   
 
 
