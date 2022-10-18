@@ -8,7 +8,7 @@ import pyqtgraph as pg
 import numpy as np
 
 from MainWindow import Ui_MainWindow
-from GraphClass import MultiLine
+#from GraphClass import MultiLine # Supposed to improve perforamnce, but with latest pyqtgraph updates maybe not needed anymore
 from WorkerClass import AcquireData
 from ParamsClass import SampleParams,DLTSParams,TempParams,LakeshoreParams,MFIAParams
 

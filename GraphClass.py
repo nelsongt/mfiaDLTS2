@@ -1,6 +1,8 @@
 import pyqtgraph as pg
 import numpy as np
 
+## TODO: This was originally from 'https://bitcoden.com/answers/plotting-large-arrays-in-pyqtgraph', but not sure if needed anymore, and doesn't work since pyqtgraph 0.13.0
+
 class MultiLine(pg.QtGui.QGraphicsPathItem):
     def __init__(self, x, y):
         """x and y are 2D arrays of shape (Nplots, Nsamples)"""
