@@ -50,11 +50,15 @@ Activate the environment:
 
 Install as many dependencies with conda as possible using the following:
 
-    conda install numpy pandas PyQt5 pyqtgraph PyMeasure zhinst
+    conda install -c conda-forge pip numpy pandas pyqt pyqtgraph pymeasure jsonschema jsonref pyelftools
+    
+Install the Zurish Instruments package using pip:
+
+    pip install zhinst
   
-Then from Anaconda Prompt type to start mfiaDLTS2:
+Then from Anaconda Prompt type to start mfiaDLTS2 (update with your own download location):
   
-    python "path to mfiaMain.py"
+    python "C:\path\to\mfiaMain.py"
   
 If you want a way to run the program by double clicking a file you have to edit the mfiaMain.bat file for this. Right click on mfiaMain.bat and hit edit. You will need to replace the path placeholders with the actual paths, eg. "Path where your Python exe is stored\python.exe" will become "C:\Users\myUser\Miniconda3\envs\mfiadlts\python.exe" but of course you will replace myUser with whatever your windows username is. After you are done, save the file. You may now run the program by double clicking this bat file or even create a shortcut to this bat file on the desktop and run from there.
   
